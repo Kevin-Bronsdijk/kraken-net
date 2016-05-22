@@ -281,30 +281,12 @@ Kraken-net supports the option which allows you to store optimized images direct
 
 ### Azure Blob
 
-**Azure Blob Storage:**
+**Azure Blob Storage with custom settings:**
 
 ```C#
-using Kraken.Model.Azure;
+using OptimizeWaitRequest = Kraken.Model.Azure.OptimizeWaitRequest;
 
-var response = client.OptimizeWait(
-   new Uri("http://image-url.com/file.jpg"),
-   new DataStore(
-      "account",
-      "key ",
-      "container"
-      )
-);
-
-if(response.Result.StatusCode == HttpStatusCode.OK)
-{
-    var url = response.Result.Body.KrakedUrl;
-}
-```
-
-**Azure Blob Storage with options:**
-
-```C#
-var response = client.OptimizeWait(new Model.Azure.OptimizeWaitRequest(
+var response = client.OptimizeWait(new OptimizeWaitRequest(
         new Uri("http://image-url.com/file.jpg"), "account", "key", "container")
         {
             ResizeImage = new ResizeImage { Height = 100, Width = 100 },
@@ -318,15 +300,14 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 }
 ```
 
-**Azure Blob Storage upload with options:**
+**Azure Blob Storage upload with custom settings options:**
 
 ```C#
-var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+using OptimizeUploadWaitRequest = Kraken.Model.Azure.OptimizeUploadWaitRequest;
 
 var response = client.OptimizeWait(
-    image, 
-    "image-name.jpg",
-    new Model.Azure.OptimizeUploadWaitRequest("account", "key","container")
+    "c:\your-image-location-on-disk.png",
+    new OptimizeUploadWaitRequest("account", "key","container")
     {
         ResizeImage = new ResizeImage { Height = 100, Width = 100 },
         WebP = true
@@ -341,13 +322,16 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 **Azure Blob Storage with custom headers and metadata:**
 
 ```C#
-var dataStore = new Kraken.Model.Azure.DataStore("account", "key","container");
+using Kraken.Model.Azure;
+using OptimizeWaitRequest = Kraken.Model.Azure.OptimizeWaitRequest;
+
+var dataStore = DataStore("account", "key","container");
 
 dataStore.AddMetadata("x-ms-meta-test1", "value1"); 
 dataStore.AddHeaders("Cache-Control", "max-age=2222");
 
 var response = client.OptimizeWait(
-    new Kraken.Model.Azure.OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
+    new OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
     {
         WebP = true
     }
@@ -365,8 +349,9 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 
 ```C#
 using Kraken.Model.S3;
+using OptimizeWaitRequest = Kraken.Model.S3.OptimizeWaitRequest;
 
-var response = client.OptimizeWait(new Model.S3.OptimizeWaitRequest(
+var response = client.OptimizeWait(new OptimizeWaitRequest(
     new Uri("http://image-url.com/file.jpg"), "account", "key", "container", "region")
     {
         ResizeImage = new ResizeImage { Height = 100, Width = 100 },
@@ -382,12 +367,11 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 **Amazon S3 upload with options:**
 
 ```C#
-var image = File.ReadAllBytes("your-image-location-on-disk.png"); 
+using OptimizeUploadWaitRequest = Kraken.Model.S3.OptimizeUploadWaitRequest;
 
 var response = client.OptimizeWait(
-    image, 
-    "image-name.jpg",
-    new Model.S3.OptimizeUploadWaitRequest("account", "key", "container", "region")
+    "c:\your-image-location-on-disk.png",
+    new OptimizeUploadWaitRequest("account", "key", "container", "region")
     {
         ResizeImage = new ResizeImage {Height = 100, Width = 100},
         WebP = true
@@ -402,13 +386,16 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 **Azure Blob Storage with custom headers and metadata:**
 
 ```C#
-var dataStore = new Kraken.Model.S3.DataStore("account", "key","container");
+using Kraken.Model.S3;
+using OptimizeWaitRequest = Kraken.Model.S3.OptimizeWaitRequest;
+
+var dataStore = new DataStore("account", "key","container");
 
 dataStore.AddMetadata("x-amz-meta-test1", "value1"); 
 dataStore.AddHeaders("Cache-Control", "public, max-age=123456");
 
 var response = client.OptimizeWait(
-    new Kraken.Model.S3.OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
+    new OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
     {
         WebP = true
     }
