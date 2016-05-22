@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
+  <id>@project@</id>
+  <version>@build.number@</version>
+  <title>@summary@</title>
+  <authors>@authors@</authors>
+  <owners>@authors@</owners>
+  <summary>@summary@</summary>
+  <licenseUrl>https://opensource.org/licenses/MS-PL</licenseUrl>
+  <projectUrl>https://github.com/kraken-io/kraken-net</projectUrl>
+  <iconUrl>https://avatars3.githubusercontent.com/u/1684861?v=3&s=200</iconUrl>
+  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <description>@description@</description>
+  <releaseNotes>@releaseNotes@</releaseNotes>
+  <copyright>2016</copyright>    
+  <tags>kraken.io C# API image optimization</tags>
+  @dependencies@
+  @references@
+  <frameworkAssemblies>
+     <frameworkAssembly assemblyName="System.Net" targetFramework="" />
+  </frameworkAssemblies>
+  </metadata>
+  @files@
+</package>
