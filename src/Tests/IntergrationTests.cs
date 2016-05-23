@@ -308,9 +308,9 @@ namespace Tests
             Assert.IsTrue(result.Body.FileName == testImageName);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
             Assert.IsTrue(result.Body.KrakedUrl.EndsWith(testImageName));
-            Assert.IsTrue(result.Body.KrakedSize > 0);
-            Assert.IsTrue(result.Body.OriginalSize > 0);
-            Assert.IsTrue(result.Body.SavedBytes > 0);
+            Assert.IsTrue(result.Body.KrakedSize >= 0);
+            Assert.IsTrue(result.Body.OriginalSize >= 0);
+            Assert.IsTrue(result.Body.SavedBytes >= 0);
         }
 
         [TestMethod]
