@@ -28,6 +28,8 @@ The kraken-net client interacts with the Kraken.io REST API allowing you to util
 * [Image Resizing](#image-resizing)
 * [API Sandbox](#api-sandbox)
 * [Account Status](#account-status)
+* [Upgrade from SeaMist](#upgrade-from-seaMist)
+ *  [Upgrade Steps](#upgrade-steps)
 
 ## Getting Started
 
@@ -235,7 +237,7 @@ Kraken allows you to easily convert different images from one type/format to ano
 
 In order to convert between different image types you need to add the `ConvertImage` object to you request. This object takes two properties:
 
-`format` — The image format you wish to convert your image into. This can accept one of the following values: `ImageFormat.jpeg`, `ImageFormat.png` or `ImageFormat.gif`.
+`format` — The image format you wish to convert your image into. This can accept one of the following values: `ImageFormat.Jpeg`, `ImageFormat.Png` or `ImageFormat.Gif`.
 
 `background` — Background image when converting from transparent file formats like PNG or GIF into fully opaque format like JPEG. The background property can be passed in HEX notation "#f60" or "#ff6600". The default background color is white.
 
@@ -243,7 +245,7 @@ In order to convert between different image types you need to add the `ConvertIm
 var response = client.OptimizeWait("c:\your-image-location-on-disk.jpg",
     new OptimizeUploadWaitRequest()
     {
-        ConvertImage = new ConvertImage(ImageFormat.gif)
+        ConvertImage = new ConvertImage(ImageFormat.Gif)
         {
             BackgroundColor = "#ffffff"
         }
@@ -281,7 +283,7 @@ Kraken-net supports the option which allows you to store optimized images direct
 
 ### Azure Blob
 
-**Azure Blob Storage with custom settings:**
+**Azure Blob Storage with custom compression settings:**
 
 ```C#
 using OptimizeWaitRequest = Kraken.Model.Azure.OptimizeWaitRequest;
@@ -300,7 +302,7 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 }
 ```
 
-**Azure Blob Storage upload with custom settings options:**
+**Azure Blob Storage upload with custom compression settings:**
 
 ```C#
 using OptimizeUploadWaitRequest = Kraken.Model.Azure.OptimizeUploadWaitRequest;
@@ -327,11 +329,11 @@ using OptimizeWaitRequest = Kraken.Model.Azure.OptimizeWaitRequest;
 
 var dataStore = DataStore("account", "key","container");
 
-dataStore.AddMetadata("x-ms-meta-test1", "value1"); 
+dataStore.AddMetadata("test1", "value1"); 
 dataStore.AddHeaders("Cache-Control", "max-age=2222");
 
 var response = client.OptimizeWait(
-    new OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
+    new OptimizeWaitRequest(new Uri("http://image-url.com/file.jpg"), dataStore)
     {
         WebP = true
     }
@@ -345,7 +347,7 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 
 ### Amazon S3
 
-**Amazon S3:**
+**Amazon S3 with custom compression settings:**
 
 ```C#
 using Kraken.Model.S3;
@@ -364,7 +366,7 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 }
 ```
 
-**Amazon S3 upload with options:**
+**Amazon S3 upload with with custom compression settings:**
 
 ```C#
 using OptimizeUploadWaitRequest = Kraken.Model.S3.OptimizeUploadWaitRequest;
@@ -395,7 +397,7 @@ dataStore.AddMetadata("x-amz-meta-test1", "value1");
 dataStore.AddHeaders("Cache-Control", "public, max-age=123456");
 
 var response = client.OptimizeWait(
-    new OptimizeWaitRequest(new Uri(TestData.ImageOne), dataStore)
+    new OptimizeWaitRequest(new Uri("http://image-url.com/file.jpg"), dataStore)
     {
         WebP = true
     }
@@ -455,7 +457,7 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 
 ## Image Resizing
 
-Image resizing option is great for creating thumbnails or preview images in your applications. Kraken will first resize the given image and then optimize it with its vast array of optimization algorithms. The `resize` option needs a few parameters to be passed like desired `width` and/or `height` and a mandatory `strategy` property. For example:
+Image resizing option is great for creating thumbnails or preview images in your applications. Kraken will first resize the given image and then optimize it with its vast array of optimization algorithms. The `resize` option needs a few parameters to be passed like desired `Width` and/or `Height` and a mandatory `Strategy` property. For example:
 
 ```C#
 var response = client.OptimizeWait("c:\your-image-location-on-disk.jpg",
@@ -476,16 +478,16 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 }
 ```
 
-The `strategy` property can have one of the following values:
+The `Strategy` property can have one of the following values:
 
-- `exact` - Resize by exact width/height. No aspect ratio will be maintained.
-- `portrait` - Exact width will be set, height will be adjusted according to aspect ratio.
-- `landscape` - Exact height will be set, width will be adjusted according to aspect ratio.
-- `auto` - The best strategy (portrait or landscape) will be selected for a given image according to aspect ratio.
-- `fit`  - This option will crop and resize your images to fit the desired width and height
-- `crop` - This option will crop your image to the exact size you specify with no distortion.
-- `square` - This strategy will first crop the image by its shorter dimension to make it a square, then resize it to the specified size.
-- `fill` - This strategy allows you to resize the image to fit the specified bounds while preserving the aspect ratio (just like auto strategy). The optional background property allows you to specify a color which will be used to fill the unused portions of the previously specified bounds.
+- `Exact` - Resize by exact width/height. No aspect ratio will be maintained.
+- `Portrait` - Exact width will be set, height will be adjusted according to aspect ratio.
+- `Landscape` - Exact height will be set, width will be adjusted according to aspect ratio.
+- `Auto` - The best strategy (portrait or landscape) will be selected for a given image according to aspect ratio.
+- `Fit`  - This option will crop and resize your images to fit the desired width and height
+- `Crop` - This option will crop your image to the exact size you specify with no distortion.
+- `Square` - This strategy will first crop the image by its shorter dimension to make it a square, then resize it to the specified size.
+- `Fill` - This strategy allows you to resize the image to fit the specified bounds while preserving the aspect ratio (just like auto strategy). The optional background property allows you to specify a color which will be used to fill the unused portions of the previously specified bounds.
 The background property can be formatted in HEX notation "#f60" or "#ff6600". The default background color is white. 
 
 ## API Sandbox
@@ -503,6 +505,21 @@ Kraken allows you to programatically query your account status, enabling you to 
 ```C#
 var response = client.UserStatus();
 ```
+## Upgrade from SeaMist
+
+Kraken-net was previously known as SeaMist. However, with the introduction of kraken-net, the development on SeaMist has been ceased. Therefore, it’s highly recommend moving to kraken-net. The development of the kraken-net client will be in sync with future kraken API Updates and or enhancements. 
+
+Apart from this, there are also numerous reasons for upgrading; 
+First of all, the kraken-net only depends on one external library (Json.Net 8.x). Compared with SeaMist which also depends on Microsoft.AspNet.WebApi.Client 5.2.3, which has a dependency on Json.Net 6.x. and therefore requiring Assembly Binding. Assembly Binding is simple to configure, however required extending the application configuration. This is somewhat unwanted when using PowerShell or other .Net tooling.
+
+In addition, new calls have been introduced to simplify requests within custom compression settings. 
+
+### Upgrade steps
+- Uninstall SeaMist
+- Install kraken-net available on NuGet
+- Update The namespace `Kraken` instead of `SeaMist`
+- Rename `KrakenConnection` to `Connection` and `KrakenClient` to `Client`
+- Make sure all enums are starting with an uppercase.
 
 ## LICENSE - MIT
 
