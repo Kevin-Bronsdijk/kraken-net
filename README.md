@@ -1,7 +1,8 @@
-﻿Kraken.io .Net client
+Official Kraken.io .Net client
 =============
+[![Build status](https://ci.appveyor.com/api/projects/status/ldgq89yc1kk3su7e?svg=true)](https://ci.appveyor.com/project/Kevin-Bronsdijk/kraken-net) [![NuGet](https://img.shields.io/nuget/v/kraken-net.svg?maxAge=2592000)](https://www.nuget.org/packages/kraken-net/)
 
-The kraken-net client interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. 
+The kraken-net client interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. Nuget Package available on [NuGet](https://www.nuget.org/packages/kraken-net/).
 
 * [Getting Started](#getting-started)
 * [Installation](#installation)
