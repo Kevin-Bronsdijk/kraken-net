@@ -14,6 +14,7 @@ using OptimizeWaitRequest = Kraken.Model.OptimizeWaitRequest;
 namespace Tests
 {
     [TestClass]
+    [Ignore]
     [DeploymentItem("Images")]
     public class IntergrationTests
     {

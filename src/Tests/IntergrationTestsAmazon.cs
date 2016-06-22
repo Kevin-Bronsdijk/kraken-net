@@ -12,6 +12,7 @@ using OptimizeWaitRequest = Kraken.Model.S3.OptimizeWaitRequest;
 namespace Tests
 {
     [TestClass]
+    [Ignore]
     [DeploymentItem("Images")]
     public class IntergrationTestsAmazon
     {
