@@ -18,6 +18,8 @@ The kraken-net client interacts with the Kraken.io REST API allowing you to util
 * [Lossy Optimization](#lossy-optimization)
   * [PNG Images](#png-images)
   * [JPEG Images](#jpeg-images)
+* [Image Sets](#image-sets)
+  * [Image Sets and External Storage](#image-sets-and-external-storage)
 * [WebP Compression](#webp-compression)
 * [Image Type Conversion](#image-type-conversion)
 * [Preserving Metadata](#preserving-metadata)
@@ -212,6 +214,75 @@ PNG images will be converted from 24-bit to paletted 8-bit with full alpha chann
 ### JPEG Images
 For lossy JPEG optimizations Kraken will generate multiple copies of a input image with a different quality settings. It will then intelligently pick the one with the best quality to filesize ration. This ensures your JPEG image will be at the smallest size with the highest possible quality, without the need for a human to select the optimal image.
 
+
+## Image Sets
+
+Kraken allows you to upload a single image and get back up to ten separate sizes, incorporating different resizing strategies, within a single response. Usefully, you can mix or match strategies - there is no restriction. Multi-resizing presents a number of advantages over the traditional one-request-per-size calls.
+
+Keep in mind that you can supply up to ten objects per each multi-resize request. If you inadvertently include more than ten, Kraken-net will throw an exception.
+
+By default, each resize object inherits certain values from the top level of the request - namely the values of the lossy and sampling_scheme parameters. However, those values can be overridden per resize object. For example, when requesting JPEG outputs you can specify different quality values per each output.
+
+Supported request types: 'OptimizeSetUploadWaitRequest', 'OptimizeSetWaitRequest', 'OptimizeSetUploadRequest' and 'OptimizeSetRequest'
+
+Image Sets Sample, Upload and Wait:
+
+```C#
+var request = new OptimizeSetUploadWaitRequest()
+{
+    // Request level settings
+    Lossy = true,
+};
+request.AddSet(new ResizeImageSet {
+    // Individual  settings
+    Name = "set1", Height = 10, Width = 10, Lossy = false
+});
+request.AddSet(new ResizeImageSet {
+    // Individual  settings
+    Name = "set2", Height = 15, Width = 15, SamplingScheme = SamplingScheme.S444
+});
+
+var response = client.OptimizeWait("c:\your-image-location-on-disk.jpeg", request);
+
+if(response.Result.StatusCode == HttpStatusCode.OK)
+{
+      foreach (var item in result.Body.Results)
+      {
+           var url = item.KrakedUrl;
+      }
+}
+```
+
+### Image Sets and External Storage
+
+A multi-resize request can be used in conjunction with Azure blob storage or Amazon S3 as the external storage provider. However, you must specify a storage_path, per resize object:
+
+Supported request types: 'OptimizeSetUploadWaitRequest', 'OptimizeSetWaitRequest', 'OptimizeSetUploadRequest' and 'OptimizeSetRequest'
+
+Image Sets Sample, Upload and Wait using Azure Blob Storage:
+
+```C#
+
+var request = new OptimizeSetUploadWaitRequest(new DataStore("account", "key", "container"))
+{
+    // Request level settings
+    Lossy = true,
+};
+
+request.AddSet(new ResizeImageSet { Name = "set1", Height = 10, Width = 10, StoragePath = "test1/test1.png" });
+request.AddSet(new ResizeImageSet { Name = "set2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
+
+var response = client.OptimizeWait("c:\your-image-location-on-disk.jpeg", request);
+
+if(response.Result.StatusCode == HttpStatusCode.OK)
+{
+      foreach (var item in result.Body.Results)
+      {
+           var url = item.KrakedUrl;
+      }
+}
+```
+
 ## WebP Compression
 
 WebP is a new image format introduced by Google in 2010 which supports both lossy and lossless compression. According to [Google](https://developers.google.com/speed/webp/), WebP lossless images are **26% smaller** in size compared to PNGs and WebP lossy images are **25-34% smaller** in size compared to JPEG images.
@@ -328,7 +399,7 @@ if(response.Result.StatusCode == HttpStatusCode.OK)
 using Kraken.Model.Azure;
 using OptimizeWaitRequest = Kraken.Model.Azure.OptimizeWaitRequest;
 
-var dataStore = DataStore("account", "key","container");
+var dataStore = new DataStore("account", "key","container");
 
 dataStore.AddMetadata("test1", "value1"); 
 dataStore.AddHeaders("Cache-Control", "max-age=2222");
