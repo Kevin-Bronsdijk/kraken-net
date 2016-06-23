@@ -469,49 +469,49 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
         }
 
-        [TestMethod]
-        public void Client_WaitNoRequestBody_IsTrue()
-        {
-            var client = HelperFunctions.CreateWorkingClient();
+        //[TestMethod]
+        //public void Client_WaitNoRequestBody_IsTrue()
+        //{
+        //    var client = HelperFunctions.CreateWorkingClient();
 
-            try
-            {
-                var response = client.OptimizeWait(
-                    TestData.LocalTestImage, null
-                    );
+        //    try
+        //    {
+        //        var response = client.OptimizeWait(
+        //            TestData.LocalTestImage, null
+        //            );
 
-                Assert.IsTrue(response == null);
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: optimizeWaitRequest");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(false, ex.Message);
-            }
-        }
+        //        Assert.IsTrue(response == null);
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: optimizeWaitRequest");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.IsTrue(false, ex.Message);
+        //    }
+        //}
 
-        [TestMethod]
-        public void Client_CallbackNoRequestBody_IsTrue()
-        {
-            var client = HelperFunctions.CreateWorkingClient();
+        //[TestMethod]
+        //public void Client_CallbackNoRequestBody_IsTrue()
+        //{
+        //    var client = HelperFunctions.CreateWorkingClient();
 
-            try
-            {
-                var response = client.Optimize(null);
+        //    try
+        //    {
+        //        var response = client.Optimize(null);
 
-                Assert.IsTrue(response == null);
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: optimizeRequest");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(false, ex.Message);
-            }
-        }
+        //        Assert.IsTrue(response == null);
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: optimizeRequest");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.IsTrue(false, ex.Message);
+        //    }
+        //}
 
         [TestMethod]
         public void Client_SimpleRequetsNoBody_IsTrue()
@@ -545,6 +545,165 @@ namespace Tests
             Assert.IsTrue(result.Success);
             Assert.IsTrue(result.Body != null);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void Client_ImageSetUploadCallBack_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeSetUploadRequest(_callbackUri)
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            var response = client.Optimize(TestData.LocalTestImage,
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+
+        [TestMethod]
+        public void Client_ImageSetUrlCallBack_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeSetRequest(new Uri(TestData.ImageOne), _callbackUri)
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            var response = client.Optimize(
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void Client_ImageSetUrlWait_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeSetWaitRequest(new Uri(TestData.ImageOne))
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            var response = client.OptimizeWait(
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 3);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
+        }
+
+        [TestMethod]
+        public void Client_ImageSetUploadWait_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeSetUploadWaitRequest()
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            var response = client.OptimizeWait(TestData.LocalTestImage,
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 3);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
+        }
+
+        [TestMethod]
+        public void Client_ImageSetUploadWaitOverridingParameters_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeSetUploadWaitRequest()
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet {
+                Name = "test1", Height = 10, Width = 10, Lossy = false
+            });
+            request.AddSet(new ResizeImageSet {
+                Name = "test2", Height = 15, Width = 15, SamplingScheme = SamplingScheme.S444
+            });
+
+            var response = client.OptimizeWait(TestData.LocalTestImage,
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 2);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
         }
     }
 }

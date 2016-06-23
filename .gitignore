@@ -1,3 +1,13 @@
+
+FAKE
+.fake
+output
+.suo
+inputNuget
+kraken-net.sln.DotSettings.user
+obj
+TestResults
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

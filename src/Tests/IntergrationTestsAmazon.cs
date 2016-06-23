@@ -8,6 +8,10 @@ using OptimizeRequest = Kraken.Model.S3.OptimizeRequest;
 using OptimizeUploadRequest = Kraken.Model.S3.OptimizeUploadRequest;
 using OptimizeUploadWaitRequest = Kraken.Model.S3.OptimizeUploadWaitRequest;
 using OptimizeWaitRequest = Kraken.Model.S3.OptimizeWaitRequest;
+using OptimizeSetRequest = Kraken.Model.S3.OptimizeSetRequest;
+using OptimizeSetUploadRequest = Kraken.Model.S3.OptimizeSetUploadRequest;
+using OptimizeSetUploadWaitRequest = Kraken.Model.S3.OptimizeSetUploadWaitRequest;
+using OptimizeSetWaitRequest = Kraken.Model.S3.OptimizeSetWaitRequest;
 
 namespace Tests
 {
@@ -45,7 +49,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -118,7 +122,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -143,7 +147,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -219,7 +223,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -241,7 +245,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -267,7 +271,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -293,7 +297,7 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
         [TestMethod]
@@ -328,8 +332,153 @@ namespace Tests
             Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
             Assert.IsTrue(result.Success);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.Contains("s3.amazonaws.com"));
+            Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
+
+        [TestMethod]
+        public void Client_ImageSetUploadCallBackAmazon_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+            var dataStore = new DataStore(
+                  Settings.AmazonKey,
+                  Settings.AmazonSecret,
+                  Settings.AmazonBucket,
+                  string.Empty
+                  );
+
+            var request = new OptimizeSetUploadRequest(_callbackUri, dataStore)
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10, StoragePath = "test1/test1.png" });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
+
+            var response = client.Optimize(TestData.LocalTestImage,
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+
+        [TestMethod]
+        public void Client_ImageSetUrlCallBackAmazon_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+            var dataStore = new DataStore(
+                  Settings.AmazonKey,
+                  Settings.AmazonSecret,
+                  Settings.AmazonBucket,
+                  string.Empty
+                  );
+
+            var request = new OptimizeSetRequest(new Uri(TestData.ImageOne), _callbackUri, dataStore)
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10, StoragePath = "test1/test1.png" });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
+
+            var response = client.Optimize(
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+        }
+
+        [TestMethod]
+        public void Client_ImageSetUrlWaitAmazon_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+            var dataStore = new DataStore(
+                  Settings.AmazonKey,
+                  Settings.AmazonSecret,
+                  Settings.AmazonBucket,
+                  string.Empty
+                  );
+
+            var request = new OptimizeSetWaitRequest(new Uri(TestData.ImageOne), dataStore)
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10, StoragePath = "test1/test1.png" });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
+
+            var response = client.OptimizeWait(
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 3);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
+        }
+
+        [TestMethod]
+        public void Client_ImageSetUploadWaitAmazon_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+            var dataStore = new DataStore(
+                  Settings.AmazonKey,
+                  Settings.AmazonSecret,
+                  Settings.AmazonBucket,
+                  string.Empty
+                  );
+
+            var request = new OptimizeSetUploadWaitRequest(dataStore)
+            {
+                Lossy = true,
+            };
+            request.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10, StoragePath = "test1/test1.png" });
+            request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
+            request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
+
+            var response = client.OptimizeWait(TestData.LocalTestImage,
+                request
+                );
+
+            var result = response.Result;
+
+            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);
+
+            Assert.IsTrue(result.Body.Results.Count == 3);
+
+            foreach (var item in result.Body.Results)
+            {
+                Assert.IsTrue(!string.IsNullOrEmpty(item.FileName));
+                Assert.IsTrue(item.KrakedSize > 0);
+                Assert.IsTrue(!string.IsNullOrEmpty(item.KrakedUrl));
+                Assert.IsTrue(item.OriginalSize > 0);
+                Assert.IsTrue(item.SavedBytes > 0);
+            }
+        }
     }
 }

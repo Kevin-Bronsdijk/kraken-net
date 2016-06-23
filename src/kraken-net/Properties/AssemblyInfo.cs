@@ -3,12 +3,12 @@ using System.Reflection;
 
 [assembly: AssemblyTitleAttribute("kraken-net")]
 [assembly: AssemblyProductAttribute("kraken-net")]
-[assembly: AssemblyDescriptionAttribute("Kraken.io .Net client")]
-[assembly: AssemblyVersionAttribute("0.1.0.0")]
-[assembly: AssemblyFileVersionAttribute("0.1.0.0")]
+[assembly: AssemblyDescriptionAttribute("The official Kraken.io .Net client")]
+[assembly: AssemblyVersionAttribute("0.1.1.0")]
+[assembly: AssemblyFileVersionAttribute("0.1.1.0")]
 namespace System {
     internal static class AssemblyVersionInformation {
-        internal const string Version = "0.1.0.0";
-        internal const string InformationalVersion = "0.1.0.0";
+        internal const string Version = "0.1.1.0";
+        internal const string InformationalVersion = "0.1.1.0";
     }
 }

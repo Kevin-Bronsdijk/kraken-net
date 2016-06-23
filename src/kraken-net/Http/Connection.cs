@@ -77,7 +77,13 @@ namespace Kraken.Http
             apiRequest.Body.Authentication.ApiKey = _apiKey;
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
             apiRequest.Body.Dev = SandboxMode;
+            bool isSet = false;
 
+            if (apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest)
+            {
+                isSet = true;
+            }
+               
             using (var requestMessage = new HttpRequestMessage(apiRequest.Method, apiRequest.Uri))
             {
                 var json = JsonConvert.SerializeObject(apiRequest.Body, _serializerSettings);
@@ -91,7 +97,7 @@ namespace Kraken.Http
                 {
                     // var test = await responseMessage.Content.ReadAsStringAsync();
 
-                    return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
+                    return await BuildResponse<TResponse>(responseMessage, isSet, cancellationToken).ConfigureAwait(false);
                 }
             }
         }
@@ -105,6 +111,12 @@ namespace Kraken.Http
             apiRequest.Body.Authentication.ApiKey = _apiKey;
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
             apiRequest.Body.Dev = SandboxMode;
+            bool isSet = false;
+
+            if (apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest)
+            {
+                isSet = true;
+            }
 
             using (
                 var content =
@@ -121,7 +133,7 @@ namespace Kraken.Http
                 {
                     // var test = await responseMessage.Content.ReadAsStringAsync();
 
-                    return await BuildResponse<TResponse>(responseMessage, cancellationToken).ConfigureAwait(false);
+                    return await BuildResponse<TResponse>(responseMessage, isSet, cancellationToken).ConfigureAwait(false);
                 }
             }
         }
@@ -137,7 +149,7 @@ namespace Kraken.Http
             }
         }
 
-        private async Task<IApiResponse<TResponse>> BuildResponse<TResponse>(HttpResponseMessage message,
+        private async Task<IApiResponse<TResponse>> BuildResponse<TResponse>(HttpResponseMessage message, bool isSet,
             CancellationToken cancellationToken)
         {
             var response = new ApiResponse<TResponse>
@@ -150,8 +162,20 @@ namespace Kraken.Http
             {
                 if (message.IsSuccessStatusCode)
                 {
-                    response.Body =
-                        await ParseResponseMessageToObject<TResponse>(message, cancellationToken).ConfigureAwait(false);
+                    if (isSet)
+                    {
+                        // Manual parsing required
+                        var json = await message.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                        //Todo: Refactor later (formatter)
+                        var optimizeSetWaitResults = Helper.JsonToSet(json);
+
+                        response.Body = (TResponse)(object)optimizeSetWaitResults;
+                    }
+                    else
+                    {
+                        response.Body = await ParseResponseMessageToObject<TResponse>(message, cancellationToken).ConfigureAwait(false);
+                    }
                 }
                 else
                 {

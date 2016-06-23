@@ -14,7 +14,7 @@
   <description>@description@</description>
   <releaseNotes>@releaseNotes@</releaseNotes>
   <copyright>2016</copyright>    
-  <tags>kraken.io C# API image optimization</tags>
+  <tags>kraken.io C# API image optimization official</tags>
   @dependencies@
   @references@
   <frameworkAssemblies>

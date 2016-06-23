@@ -25,5 +25,17 @@ namespace Kraken.Model
 
         [JsonProperty("kraked_url")]
         public string KrakedUrl { get; set; }
+
+        [JsonProperty("original_width")]
+        public int OriginalWidth { get; set; }
+
+        [JsonProperty("original_height")]
+        public int OriginalHeight { get; set; }
+
+        [JsonProperty("kraked_width")]
+        public int KrakedWidth { get; set; }
+
+        [JsonProperty("kraked_height")]
+        public int KrakedHeight { get; set; }
     }
 }

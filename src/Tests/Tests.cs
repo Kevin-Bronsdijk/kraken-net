@@ -337,5 +337,50 @@ namespace Tests
                 Assert.IsTrue(false, ex.Message);
             }
         }
+
+        [TestMethod]
+        public void OptimizeSetRequestBase_ImageSetSameName_IsTrue()
+        {
+            var optimizeSetUploadRequest = new OptimizeSetUploadRequest(new Uri("http://kraken.io/test"));
+
+            var Sri = new ResizeImageSet { Name = "test1", Height = 10, Width = 10 };
+
+            optimizeSetUploadRequest.AddSet(Sri);
+
+            try
+            {
+                optimizeSetUploadRequest.AddSet(Sri);
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(ex.Message == "Item already exists in collection");
+            }
+        }
+
+        [TestMethod]
+        public void OptimizeSetRequestBase_ImageSetexceedMaximum_IsTrue()
+        {
+            var optimizeSetUploadRequest = new OptimizeSetUploadRequest(new Uri("http://kraken.io/test"));
+
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test2", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test3", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test4", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test5", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test6", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test7", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test8", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test9", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test10", Height = 10, Width = 10 });
+
+            try
+            {
+                optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "error", Height = 10, Width = 10 });
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(ex.Message == "Cannot exceed the quota of 10 instructions per request");
+            }
+        }
     }
 }

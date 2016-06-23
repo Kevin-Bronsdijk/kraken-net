@@ -12,12 +12,12 @@ open Fake.AssemblyInfoFile
 
 let project = "kraken-net"
 let authors = ["Kraken.io, Kevin Bronsdijk"]
-let summary = "Kraken.io .Net client"
-let version = "0.1.0.0"
-let description = "The kraken-net client interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
-let notes = "For more information and documentation, please visit the project site on GitHub."
-let nugetVersion = "1.0.0"
-let tags = "kraken.io C# API image optimization"
+let summary = "The official Kraken.io .Net client"
+let version = "0.1.1.0"
+let description = "The official kraken-net client interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
+let notes = "Added Image Sets support, including Amazon S3 and Azure Blob storage. For more information and documentation, please visit the project site on GitHub."
+let nugetVersion = "1.1.0"
+let tags = "kraken.io C# API image optimization official"
 let gitHome = "https://github.com/kraken-io"
 let gitName = "kraken-net"
 

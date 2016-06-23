@@ -46,7 +46,7 @@ namespace Kraken
         }
 
         #region Simple Requests
-      
+
         // Keep all default settings as provided by Kraken 
 
         public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri)
@@ -56,6 +56,11 @@ namespace Kraken
 
         public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, CancellationToken cancellationToken)
         {
+            if (imageUri == null)
+            {
+                throw new ArgumentNullException(nameof(imageUri));
+            }
+
             var optimizeRequest = new OptimizeWaitRequest(imageUri);
 
             var message = OptimizeWait(optimizeRequest, cancellationToken);
@@ -71,6 +76,15 @@ namespace Kraken
         public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl,
             CancellationToken cancellationToken)
         {
+            if (imageUri == null)
+            {
+                throw new ArgumentNullException(nameof(imageUri));
+            }
+            if (callbackUrl == null)
+            {
+                throw new ArgumentNullException(nameof(callbackUrl));
+            }
+
             var optimize = new OptimizeRequest(imageUri, callbackUrl);
 
             var message = Optimize(optimize, cancellationToken);
@@ -259,6 +273,110 @@ namespace Kraken
 
             var message = _connection.Execute<OptimizeResult>(new ApiRequest(optimizeRequest, "v1/url"),
                 cancellationToken);
+
+            return message;
+        }
+
+        #endregion
+
+        #region Image Sets
+
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(IOptimizeSetWaitRequest optimizeSetWaitRequest)
+        {
+            return OptimizeWait(optimizeSetWaitRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(IOptimizeSetWaitRequest optimizeSetWaitRequest, CancellationToken cancellationToken)
+        {
+            var message = _connection.Execute<OptimizeSetWaitResults>(new ApiRequest(optimizeSetWaitRequest, "v1/url"),
+                cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeSetRequest optimizeSetRequest)
+        {
+            return Optimize(optimizeSetRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeSetRequest optimizeSetRequest, CancellationToken cancellationToken)
+        {
+            var message = _connection.Execute<OptimizeResult>(new ApiRequest(optimizeSetRequest, "v1/url"),
+                cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(byte[] image, string filename,
+            IOptimizeSetUploadWaitRequest optimizeWaitRequest)
+        {
+            return OptimizeWait(image, filename, optimizeWaitRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(byte[] image, string filename,
+            IOptimizeSetUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+        {
+            filename.ThrowIfNullOrEmpty("filename");
+
+            var message =
+                _connection.ExecuteUpload<OptimizeSetWaitResults>(new ApiRequest(optimizeWaitRequest, "v1/upload"),
+                    image, filename, cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(string filePath, IOptimizeSetUploadWaitRequest optimizeWaitRequest)
+        {
+            return OptimizeWait(filePath, optimizeWaitRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(string filePath,
+            IOptimizeSetUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+        {
+            filePath.ThrowIfNullOrEmpty("filePath");
+            if (!File.Exists(filePath)) { throw new FileNotFoundException(); }
+
+            var file = File.ReadAllBytes(filePath);
+
+            var message =
+                _connection.ExecuteUpload<OptimizeSetWaitResults>(new ApiRequest(optimizeWaitRequest, "v1/upload"),
+                    file, Path.GetFileName(filePath), cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
+            IOptimizeSetUploadRequest optimizeRequest)
+        {
+            return Optimize(image, filename, optimizeRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
+            IOptimizeSetUploadRequest optimizeRequest, CancellationToken cancellationToken)
+        {
+            filename.ThrowIfNullOrEmpty("filename");
+
+            var message = _connection.ExecuteUpload<OptimizeResult>(new ApiRequest(optimizeRequest, "v1/upload"),
+                image, filename, cancellationToken);
+
+            return message;
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, IOptimizeSetUploadRequest optimizeRequest)
+        {
+            return Optimize(filePath, optimizeRequest, default(CancellationToken));
+        }
+
+        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath,
+            IOptimizeSetUploadRequest optimizeRequest, CancellationToken cancellationToken)
+        {
+            filePath.ThrowIfNullOrEmpty("filePath");
+            if (!File.Exists(filePath)) { throw new FileNotFoundException(); }
+
+            var file = File.ReadAllBytes(filePath);
+
+            var message = _connection.ExecuteUpload<OptimizeResult>(new ApiRequest(optimizeRequest, "v1/upload"),
+                file, filePath, cancellationToken);
 
             return message;
         }

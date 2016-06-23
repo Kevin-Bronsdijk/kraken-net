@@ -4,7 +4,7 @@ namespace Tests
 {
     public static class TestData
     {
-        public const string ImageOne = "https://kraken.io/assets/images/kraken-logo-4.png";
+        public const string ImageOne = "https://kraken.io/assets/images/kraken-logotype.png";
         public const string Image404 = "https://kraken.io/im-out-for-lunch.png";
         // Todo: Needs to be included within the test project, but dont want any copyright issues... 
         public const string ImageGeoTag =
