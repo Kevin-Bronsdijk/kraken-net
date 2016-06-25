@@ -1,9 +1,12 @@
-Official Kraken.io .Net client
+The official Kraken.io .Net client
 =============
 [![Build status](https://ci.appveyor.com/api/projects/status/ldgq89yc1kk3su7e?svg=true)](https://ci.appveyor.com/project/Kevin-Bronsdijk/kraken-net) [![NuGet](https://img.shields.io/nuget/v/kraken-net.svg?maxAge=2592000)](https://www.nuget.org/packages/kraken-net/)
+***
+### The official Kraken.IO .Net client targeting .Net framework  version 4.5.2 and higher.
+NuGet Package available on [NuGet](https://www.nuget.org/packages/kraken-net/).
 
-The kraken-net client interacts with the Kraken.io REST API allowing you to utilize Kraken’s features using a .NET interface. Nuget Package available on [NuGet](https://www.nuget.org/packages/kraken-net/).
-
+ Upgrade from SeaMist? The upgrade process is simple and the steps can be found within the [upgrade guide](https://github.com/Kevin-Bronsdijk/kraken-net#upgrade-from-seamist).
+***
 * [Getting Started](#getting-started)
 * [Installation](#installation)
 * [Downloading Images](#downloading-images)
