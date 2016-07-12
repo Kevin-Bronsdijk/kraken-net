@@ -129,7 +129,7 @@ namespace Kraken.Http
 
                 using (
                     var responseMessage =
-                        await _client.PostAsync(_krakenApiUrl + apiRequest.Uri, content, cancellationToken))
+                        await _client.PostAsync(_krakenApiUrl + apiRequest.Uri, content, cancellationToken).ConfigureAwait(false))
                 {
                     // var test = await responseMessage.Content.ReadAsStringAsync();
 

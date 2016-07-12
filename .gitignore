@@ -7,6 +7,7 @@ inputNuget
 kraken-net.sln.DotSettings.user
 obj
 TestResults
+bin
 
 # Windows image file caches
 Thumbs.db
