@@ -8,6 +8,7 @@ kraken-net.sln.DotSettings.user
 obj
 TestResults
 bin
+.vs
 
 # Windows image file caches
 Thumbs.db
