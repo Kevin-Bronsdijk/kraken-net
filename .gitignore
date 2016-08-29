@@ -53,3 +53,6 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+nuGet/kraken-net.1.0.0.nupkg
+*.user
+nuGet/kraken-net.1.0.0.nupkg

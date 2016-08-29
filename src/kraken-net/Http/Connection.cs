@@ -26,6 +26,8 @@ namespace Kraken.Http
         {
             _client = new HttpClient(handler) {BaseAddress = _krakenApiUrl};
             _client.DefaultRequestHeaders.Add("Accept", "application/json");
+            _client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", 
+                "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36");
 
             SandboxMode = sandboxMode;
 
@@ -101,7 +103,6 @@ namespace Kraken.Http
                 }
             }
         }
-
 
         internal async Task<IApiResponse<TResponse>> ExecuteUpload<TResponse>(
             ApiRequest apiRequest, byte[] image, string filename, CancellationToken cancellationToken)

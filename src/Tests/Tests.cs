@@ -382,5 +382,13 @@ namespace Tests
                 Assert.IsTrue(ex.Message == "Cannot exceed the quota of 10 instructions per request");
             }
         }
+
+        [TestMethod]
+        public void General_isUri_IsTrue()
+        {
+            // Just wanted to see if this is a valid Uri as per
+            // https://kraken.io/account/updates
+            var HttpBasicAuthentication = new Uri("https://username:password@awesome-website.com/images/header.png");
+        }
     }
 }
