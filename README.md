@@ -2,7 +2,7 @@ The official Kraken.io .Net client
 =============
 [![Build status](https://ci.appveyor.com/api/projects/status/ldgq89yc1kk3su7e?svg=true)](https://ci.appveyor.com/project/Kevin-Bronsdijk/kraken-net) [![NuGet](https://img.shields.io/nuget/v/kraken-net.svg)](https://www.nuget.org/packages/kraken-net/)
 ***
-### The official Kraken.IO .Net client targeting .Net framework  version 4.5.2 and higher.
+### The official Kraken.IO .Net client targeting .Net framework  version 4.5 and higher.
 NuGet Package available on [NuGet](https://www.nuget.org/packages/kraken-net/).
 
  Upgrade from SeaMist? The upgrade process is simple and the steps can be found within the [upgrade guide](https://github.com/Kevin-Bronsdijk/kraken-net#upgrade-from-seamist).
@@ -74,6 +74,8 @@ The first option (image URL) is great for images that are already in production 
 **Request:**
 
 ```C#
+var client = new Client(connection);
+
 var response = client.OptimizeWait(
     new Uri("http://image-url.com/file.jpg")
 );
