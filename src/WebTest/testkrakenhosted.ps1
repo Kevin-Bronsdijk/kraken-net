@@ -5,7 +5,7 @@ $urlsToTest =
 @(
 'http://localhost:65461/test/CanUploadImage', `
 'http://localhost:65461/test/CanUploadImage', `
-'http://localhost:65461/test/CanCreateClient' `
+'http://localhost:65461/azuretest/CanCreateClient' `
 )
 
 $urlsToTest |  `
