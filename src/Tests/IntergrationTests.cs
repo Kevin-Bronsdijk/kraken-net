@@ -258,6 +258,33 @@ namespace Tests
         }
 
         [TestMethod]
+        public void Client_CustomRequestChangeSizeSquare_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
+            {
+                ResizeImage = new ResizeImage
+                {
+                    Size = 120,
+                    Strategy = Strategy.Square,
+                }
+            };
+
+            var response = client.OptimizeWait(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Body != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+
+            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+
+            var img = Image.FromFile(localFile);
+            Assert.IsTrue(img.Height == 120);
+            Assert.IsTrue(img.Width == 120);
+        }
+
+        [TestMethod]
         public void Client_OptimizeRequestCallback_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();

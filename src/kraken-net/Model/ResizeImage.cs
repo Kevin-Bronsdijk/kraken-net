@@ -21,5 +21,8 @@ namespace Kraken.Model
 
         [JsonProperty("crop_mode")]
         public string CropMode { get; set; } = "c";
+
+        [JsonProperty("size")]
+        public int? Size { get; set; }  
     }
 }
