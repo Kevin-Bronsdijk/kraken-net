@@ -5,6 +5,7 @@
 #r @"tools\FAKE\tools\FakeLib.dll"
 open Fake
 open Fake.AssemblyInfoFile
+open Fake.MSTest
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
@@ -61,6 +62,14 @@ Target "Build" (fun _ ->
 
 // --------------------------------------------------------------------------------------
 
+Target "Test" (fun _ ->
+    !! (buildDir + @"\*Tests.dll") 
+      |> MSTest (fun p -> {p with ResultsDir = buildDir })
+)
+
+// --------------------------------------------------------------------------------------
+
+
 Target "CreatePackage" (fun _ ->
 
     CreateDir packagingWorkingDir
@@ -93,6 +102,7 @@ Target "All" DoNothing
 "Clean"
   ==> "AssemblyInfo"
   ==> "Build"
+  ==> "Test"
   ==> "CreatePackage"
   ==> "All"
 
