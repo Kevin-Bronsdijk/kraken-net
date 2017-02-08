@@ -732,5 +732,29 @@ namespace Tests
                 Assert.IsTrue(item.SavedBytes > 0);
             }
         }
+
+        [TestMethod]
+        public void Client_OptimizeCheckCustomQuality_IsTrue()
+        {
+            var client = HelperFunctions.CreateWorkingClient();
+
+            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
+            {
+                Lossy = true,
+                Quality = 90
+            };
+
+            var response = client.OptimizeWait(request);
+            var result = response.Result;
+
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Body != null);            
+            
+            Assert.IsTrue(result.Body.KrakedSize > 0);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            Assert.IsTrue(result.Body.OriginalSize > 0);
+            Assert.IsTrue(result.Body.SavedBytes >= 0);
+
+        }
     }
 }

@@ -50,6 +50,6 @@ namespace Kraken.Model
         public bool Dev { get; set; }
 
         [JsonProperty("quality")]
-        public int Quality { get; set; }
+        public int? Quality { get; set; }
     }
 }
