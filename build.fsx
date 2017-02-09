@@ -14,10 +14,10 @@ open Fake.MSTest
 let project = "kraken-net"
 let authors = ["Kraken.io, Kevin Bronsdijk"]
 let summary = "The official Kraken.io .Net client"
-let version = "0.1.1.4"
+let version = "0.1.1.5"
 let description = "The official kraken-net client interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
-let notes = "Added size parameter to be used in conjunction with the square strategy. For more information and documentation, please visit the project site on GitHub."
-let nugetVersion = "1.1.4"
+let notes = "Added the option to specify image Quality. For more information and documentation, please visit the project site on GitHub."
+let nugetVersion = "1.1.5"
 let tags = "kraken.io C# API image optimization official"
 let gitHome = "https://github.com/kraken-io"
 let gitName = "kraken-net"
