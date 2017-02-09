@@ -48,5 +48,8 @@ namespace Kraken.Model
 
         [JsonProperty("dev")]
         public bool Dev { get; set; }
+
+        [JsonProperty("quality")]
+        public int? Quality { get; set; }
     }
 }
