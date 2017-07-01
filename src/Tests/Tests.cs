@@ -4,6 +4,7 @@ using Kraken;
 using Kraken.Http;
 using Kraken.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
 
 namespace Tests
 {
@@ -13,73 +14,29 @@ namespace Tests
         [TestMethod]
         public void ConnectionCreate_EmptyKeyError_IsTrue()
         {
-            try
-            {
-                Connection.Create("", "secret");
-                Assert.IsTrue(false);
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.IsTrue(ex.Message == "Argument must not be the empty string.\r\nParameter name: apiKey");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(false, ex.Message);
-            }
+            Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithAnEmptyKeyValue())
+                .Message.ShouldBe("Argument must not be the empty string.\r\nParameter name: apiKey");
         }
 
         [TestMethod]
         public void ConnectionCreate_NullKeyError_IsTrue()
         {
-            try
-            {
-                Connection.Create(null, "secret");
-                Assert.IsTrue(false);
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: apiKey");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(false, ex.Message);
-            }
+            Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithANullKeyValue())
+                .Message.ShouldBe("Value cannot be null.\r\nParameter name: apiKey");
         }
 
         [TestMethod]
         public void ConnectionCreate_EmptySecretError_IsTrue()
         {
-            try
-            {
-                Connection.Create("key", "");
-                Assert.IsTrue(false);
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.IsTrue(ex.Message == "Argument must not be the empty string.\r\nParameter name: apiSecret");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(false, ex.Message);
-            }
+            Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithAnEmptySecretValue())
+                .Message.ShouldBe("Argument must not be the empty string.\r\nParameter name: apiSecret");
         }
 
         [TestMethod]
         public void ConnectionCreate_NullSecretError_IsTrue()
         {
-            try
-            {
-                Connection.Create("key", null);
-                Assert.IsTrue(false);
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: apiSecret");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(false, ex.Message);
-            }
+            Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithANullSecretValue())
+                .Message.ShouldBe("Value cannot be null.\r\nParameter name: apiSecret");
         }
 
         [TestMethod]
