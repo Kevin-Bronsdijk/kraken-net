@@ -37,12 +37,6 @@ namespace Tests
         }
 
         [TestMethod]
-        public void Client_NoErrors_IsTrue()
-        {
-            Should.NotThrow(() => Given.AClient.ThatCanConnect());
-        }
-
-        [TestMethod]
         public void Client_IsSandboxMode_IsTrue()
         {
             Given.AConnection.ThatHasAValidArguments(true)
