@@ -60,7 +60,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ClientExt.cs" />
+    <Compile Include="Ext.cs" />
     <Compile Include="ExifTests.cs" />
     <Compile Include="FakeDataStore.cs" />
     <Compile Include="Given.cs" />

@@ -2,10 +2,9 @@
 using System.Drawing;
 using System.IO;
 using System.Net;
-using Kraken;
-using Kraken.Http;
 using Kraken.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
 using OptimizeRequest = Kraken.Model.OptimizeRequest;
 using OptimizeUploadRequest = Kraken.Model.OptimizeUploadRequest;
 using OptimizeUploadWaitRequest = Kraken.Model.OptimizeUploadWaitRequest;
@@ -14,7 +13,7 @@ using OptimizeWaitRequest = Kraken.Model.OptimizeWaitRequest;
 namespace Tests
 {
     [TestClass]
-    [Ignore]
+   // [Ignore]
     [DeploymentItem("Images")]
     public class IntergrationTests
     {
@@ -29,121 +28,86 @@ namespace Tests
         [TestMethod]
         public void Client_Unauthorized_IsTrue()
         {
-            var connection = Connection.Create("key", "secret");
-            var client = new Client(connection);
-
-            var response = client.OptimizeWait(
-                new Uri(TestData.ImageOne));
-
-            var result = response.Result;
-
-            Assert.IsTrue(result.StatusCode == HttpStatusCode.Unauthorized);
+            Given.AClient.ThatHasAValidConnection().OptimizeWait(
+                Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb())
+                .Result.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         }
 
         [TestMethod]
         public void Client_UnauthorizedSandbox_IsTrue()
         {
-            var connection = Connection.Create("key", "secret");
-            var client = new Client(connection);
-
-            var response = client.OptimizeWait(
-                new Uri(TestData.ImageOne));
-
-            var result = response.Result;
-
-            Assert.IsTrue(result.StatusCode == HttpStatusCode.Unauthorized);
+            Given.AClient.ThatHasAValidConnection(true).OptimizeWait(
+                    Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb())
+                .Result.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         }
 
         [TestMethod]
         public void Client_GetUserStatus_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().UserStatus().Result;
 
-            var response = client.UserStatus();
-
-            var result = response.Result;
-
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
-
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.PlanName));
-            Assert.IsTrue(result.Body.Active || result.Body.Active == false);
-            Assert.IsTrue(result.Body.QuotaTotal > -0);
-            Assert.IsTrue(result.Body.QuotaUsed > -0);
-            Assert.IsTrue(result.Body.QuotaRemaining > -999999);
-            Assert.IsTrue(result.Body.Success);
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.Success.ShouldBeTrue();
+            testitem.Body.PlanName.ShouldNotBeNullOrEmpty();
+            testitem.Body.Active.ShouldNotBeNull();
+            testitem.Body.QuotaTotal.ShouldBeGreaterThan(-0);
+            testitem.Body.QuotaUsed.ShouldBeGreaterThan(-0);
+            testitem.Body.QuotaRemaining.ShouldBeGreaterThan(-999999);
         }
 
         [TestMethod]
         public void Client_InvalidResource404_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AnExternalImageUrl.ThatReturns404ImageLocation()).Result;
 
-            var response = client.OptimizeWait(
-                new Uri(TestData.Image404));
-
-            var result = response.Result;
-
-            Assert.IsTrue((int)result.StatusCode == 422);
-            Assert.IsTrue(result.Success == false);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Error));
+            testitem.StatusCode.ShouldBe((HttpStatusCode)422);
+            testitem.Success.ShouldBeFalse();
+            testitem.Error.ShouldNotBeNullOrEmpty();
         }
 
         [TestMethod]
         public void Client_IgnoreInvalidResource404Sandbox_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient(true);
+            var testitem = Given.AClient.ThatCanConnect(true).OptimizeWait(
+                Given.AnExternalImageUrl.ThatReturns404ImageLocation()).Result;
 
-            var response = client.OptimizeWait(
-                new Uri(TestData.Image404));
-
-            var result = response.Result;
-
-            // Should still work, file ignored because getting random results
-            // when in developer mode
-            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
-            Assert.IsTrue(result.Success);
-
-            Assert.IsTrue(result.Body.Success);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
-            Assert.IsTrue(result.Body.KrakedSize > 0);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.OriginalSize > 0);
-            Assert.IsTrue(result.Body.SavedBytes > 0);
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.Success.ShouldBeTrue();
+            testitem.Body.FileName.ShouldNotBeNullOrEmpty();
+            testitem.Body.KrakedSize.ShouldBeGreaterThan(0);
+            testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
+            testitem.Body.OriginalSize.ShouldBeGreaterThan(0);
+            testitem.Body.SavedBytes.ShouldBeGreaterThan(0);
         }
 
         [TestMethod]
         public void Client_OptimizeWait_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb()).Result;
 
-            var response = client.OptimizeWait(
-                new Uri(TestData.ImageOne));
-
-            var result = response.Result;
-
-            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
-            Assert.IsTrue(result.Success);
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
         }
 
         [TestMethod]
         public void Client_OptimizeCheckResultBody_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb()).Result;
 
-            var response = client.OptimizeWait(
-                new Uri(TestData.ImageOne));
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-            var result = response.Result;
-
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(result.Body != null);
-
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
-            Assert.IsTrue(result.Body.KrakedSize > 0);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.OriginalSize > 0);
-            Assert.IsTrue(result.Body.SavedBytes >= 0);
+            testitem.Body.Success.ShouldBeTrue();
+            testitem.Body.FileName.ShouldNotBeNullOrEmpty();
+            testitem.Body.KrakedSize.ShouldBeGreaterThan(0);
+            testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
+            testitem.Body.OriginalSize.ShouldBeGreaterThan(0);
+            testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
         [TestMethod]
@@ -496,50 +460,6 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
         }
 
-        //[TestMethod]
-        //public void Client_WaitNoRequestBody_IsTrue()
-        //{
-        //    var client = HelperFunctions.CreateWorkingClient();
-
-        //    try
-        //    {
-        //        var response = client.OptimizeWait(
-        //            TestData.LocalTestImage, null
-        //            );
-
-        //        Assert.IsTrue(response == null);
-        //    }
-        //    catch (ArgumentException ex)
-        //    {
-        //        Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: optimizeWaitRequest");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Assert.IsTrue(false, ex.Message);
-        //    }
-        //}
-
-        //[TestMethod]
-        //public void Client_CallbackNoRequestBody_IsTrue()
-        //{
-        //    var client = HelperFunctions.CreateWorkingClient();
-
-        //    try
-        //    {
-        //        var response = client.Optimize(null);
-
-        //        Assert.IsTrue(response == null);
-        //    }
-        //    catch (ArgumentException ex)
-        //    {
-        //        Assert.IsTrue(ex.Message == "Value cannot be null.\r\nParameter name: optimizeRequest");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Assert.IsTrue(false, ex.Message);
-        //    }
-        //}
-
         [TestMethod]
         public void Client_SimpleRequetsNoBody_IsTrue()
         {
@@ -754,7 +674,6 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
             Assert.IsTrue(result.Body.OriginalSize > 0);
             Assert.IsTrue(result.Body.SavedBytes >= 0);
-
         }
     }
 }
