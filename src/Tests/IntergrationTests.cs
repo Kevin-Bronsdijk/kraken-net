@@ -184,57 +184,42 @@ namespace Tests
         [TestMethod]
         public void Client_CustomRequestChangeSizeSquare_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
-
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
-            {
-                ResizeImage = new ResizeImage
-                {
-                    Size = 120,
-                    Strategy = Strategy.Square,
-                }
-            };
-
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            var result = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatResizesTheImageIntoASquare()
+            ).Result;
 
             var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+            var testitem = Image.FromFile(localFile);
 
-            var img = Image.FromFile(localFile);
-            Assert.IsTrue(img.Height == 120);
-            Assert.IsTrue(img.Width == 120);
+            testitem.Height.ShouldBe(120);
+            testitem.Width.ShouldBe(120);
         }
 
         [TestMethod]
         public void Client_OptimizeRequestCallback_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().Optimize(
+                Given.AOptimizeRequest.ThatHasAnExistingImageAndValidCallBackUri()
+            ).Result;
 
-            var request = new OptimizeRequest(new Uri(TestData.ImageOne), _callbackUri);
-
-            var response = client.Optimize(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.ShouldNotBeNull();
+            testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
         [TestMethod]
         public void Client_OptimizeRequestCallbackSandbox_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient(true);
+            var testitem = Given.AClient.ThatCanConnect(true).Optimize(
+                 Given.AOptimizeRequest.ThatHasAnExistingImageAndValidCallBackUri()
+             ).Result;
 
-            var request = new OptimizeRequest(new Uri(TestData.ImageOne), _callbackUri);
-
-            var response = client.Optimize(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Body != null);
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.ShouldNotBeNull();
             // No id in sandbox mode
-            Assert.IsTrue(result.Body.Id == null);
+            testitem.Body.Id.ShouldBeNullOrEmpty();
         }
 
         [TestMethod]
@@ -332,7 +317,6 @@ namespace Tests
             Assert.IsTrue(result.Body != null);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
-
 
         [TestMethod]
         public void Client_UploadFromFilePathImageWait_IsTrue()

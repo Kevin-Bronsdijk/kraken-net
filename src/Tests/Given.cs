@@ -17,6 +17,8 @@ namespace Tests
 
         public static OptimizeWaitRequest AOptimizeWaitRequest => new OptimizeWaitRequest(null);
 
+        public static OptimizeRequest AOptimizeRequest => new OptimizeRequest(AnExternalImageUrl, ACallBackUrl);
+
         public static Connection AConnection => Connection.Create("init", "init");
 
         public static OptimizeUploadWaitRequest AOptimizeUploadWaitRequest => new OptimizeUploadWaitRequest();

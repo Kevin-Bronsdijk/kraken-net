@@ -51,6 +51,18 @@ namespace Tests
         }
     }
 
+    public static class OptimizeRequestExt
+    {
+        public static OptimizeRequest ThatHasAnExistingImageAndValidCallBackUri(this OptimizeRequest optimizeRequest)
+        {
+            optimizeRequest = new OptimizeRequest(
+                Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb()
+                , Given.ACallBackUrl.ThatIsAValidCallBackUrl());
+
+            return optimizeRequest;
+        }
+    }
+
     public static class OptimizeWaitRequestExt
     {
         public static OptimizeWaitRequest ThatHasAUriToAnImageWithGeoTags(this OptimizeWaitRequest optimizeWaitRequest, 
@@ -107,6 +119,20 @@ namespace Tests
                     BackgroundColor = "#ffffff",
                     Strategy = Strategy.Exact,
                     CropMode = "c"
+                }
+            };
+
+            return optimizeWaitRequest;
+        }
+
+        public static OptimizeWaitRequest ThatResizesTheImageIntoASquare(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            {
+                ResizeImage = new ResizeImage
+                {
+                    Size = 120,
+                    Strategy = Strategy.Square,
                 }
             };
 
