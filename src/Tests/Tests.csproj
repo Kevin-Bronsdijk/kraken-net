@@ -40,6 +40,10 @@
       <HintPath>..\packages\ExifLib.1.7.0.0\lib\net45\ExifLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Shouldly, Version=2.8.3.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shouldly.2.8.3\lib\net40\Shouldly.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
@@ -56,8 +60,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Ext.cs" />
     <Compile Include="ExifTests.cs" />
     <Compile Include="FakeDataStore.cs" />
+    <Compile Include="Given.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="IntergrationTestsAmazon.cs" />
     <Compile Include="IntergrationTestsAzure.cs" />

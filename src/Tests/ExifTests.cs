@@ -3,7 +3,7 @@ using System.Net;
 using ExifLib;
 using Kraken.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OptimizeWaitRequest = Kraken.Model.OptimizeWaitRequest;
+using Shouldly;
 
 namespace Tests
 {
@@ -12,83 +12,50 @@ namespace Tests
     [DeploymentItem("Images")]
     public class ExifTests
     {
-        [TestInitialize]
-        public void Initialize()
-        {
-        }
-
         [TestMethod]
         public void Client_CustomRequestRemoveGeoData_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var response = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatHasAUriToAnImageWithGeoTags()).Result;
 
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag));
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            response.Body.ShouldNotBeNull();
+            response.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
 
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
+            var localFile = HelperFunctions.DownloadImage(response.Body.KrakedUrl);
 
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-
-            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
-
-            try
-            {
-                // Will fail is there isn't any Exif data
-                using (var reader = new ExifReader(localFile))
-                {
-                }
-
-                Assert.IsTrue(false, "No Exception");
-            }
-            catch (Exception)
-            {
-                Assert.IsTrue(true, "No Exif data");
-            }
+            // Will fail is there isn't any Exif data
+            Should.Throw<Exception>(() => new ExifReader(localFile));
         }
 
         [TestMethod]
         public void Client_CustomRequestKeepGeoData_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var response = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatHasAUriToAnImageWithGeoTags(new[] { PreserveMeta.Geotag })).Result;
 
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            response.Body.ShouldNotBeNull();
+            response.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
+
+            var localFile = HelperFunctions.DownloadImage(response.Body.KrakedUrl);
+
+            using (var reader = new ExifReader(localFile))
             {
-                PreserveMeta = new[] { PreserveMeta.Geotag }
-            };
+                double[] gpsLongArray;
+                double[] gpsLatArray;
+                double gpsLongDouble = 0;
+                double gpsLatDouble = 0;
 
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.StatusCode == HttpStatusCode.OK);
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-
-            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
-
-            try
-            {
-                using (var reader = new ExifReader(localFile))
+                if (reader.GetTagValue(ExifTags.GPSLongitude, out gpsLongArray)
+                    && reader.GetTagValue(ExifTags.GPSLatitude, out gpsLatArray))
                 {
-                    double[] gpsLongArray;
-                    double[] gpsLatArray;
-                    double gpsLongDouble = 0;
-                    double gpsLatDouble = 0;
-
-                    if (reader.GetTagValue(ExifTags.GPSLongitude, out gpsLongArray)
-                        && reader.GetTagValue(ExifTags.GPSLatitude, out gpsLatArray))
-                    {
-                        gpsLongDouble = gpsLongArray[0] + gpsLongArray[1] / 60 + gpsLongArray[2] / 3600;
-                        gpsLatDouble = gpsLatArray[0] + gpsLatArray[1] / 60 + gpsLatArray[2] / 3600;
-                    }
-
-                    Assert.IsTrue(gpsLongDouble == 120.7602005);
-                    Assert.IsTrue(gpsLatDouble == 21.958606694444445);
+                    gpsLongDouble = gpsLongArray[0] + gpsLongArray[1] / 60 + gpsLongArray[2] / 3600;
+                    gpsLatDouble = gpsLatArray[0] + gpsLatArray[1] / 60 + gpsLatArray[2] / 3600;
                 }
-            }
-            catch (Exception)
-            {
-                Assert.IsTrue(false, "No Exif data");
+
+                gpsLongDouble.ShouldBe(120.7602005);
+                gpsLatDouble.ShouldBe(21.958606694444445);
             }
         }
     }
