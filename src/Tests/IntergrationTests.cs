@@ -13,7 +13,7 @@ using OptimizeWaitRequest = Kraken.Model.OptimizeWaitRequest;
 namespace Tests
 {
     [TestClass]
-    [Ignore]
+    //[Ignore]
     [DeploymentItem("Images")]
     public class IntergrationTests
     {
@@ -80,7 +80,7 @@ namespace Tests
             testitem.Body.KrakedSize.ShouldBeGreaterThan(0);
             testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
             testitem.Body.OriginalSize.ShouldBeGreaterThan(0);
-            testitem.Body.SavedBytes.ShouldBeGreaterThan(0);
+            testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
         [TestMethod]
@@ -101,7 +101,6 @@ namespace Tests
 
             testitem.Success.ShouldBeTrue();
             testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
-
             testitem.Body.Success.ShouldBeTrue();
             testitem.Body.FileName.ShouldNotBeNullOrEmpty();
             testitem.Body.KrakedSize.ShouldBeGreaterThan(0);
@@ -113,112 +112,73 @@ namespace Tests
         [TestMethod]
         public void Client_OptimizeCallbackCheckResultBody_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().Optimize(
+                Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb(),
+                Given.AnExternalImageUrl.ThatIsAValidCallBackUrl()).Result;
 
-            var response = client.Optimize(
-                new Uri(TestData.ImageOne), _callbackUri);
-
-            var result = response.Result;
-
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.ShouldNotBeNull();
+            testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
         [TestMethod]
         public void Client_CustomRequestOptimizeCheckResultBody_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatHasLossySetAsTrue()
+                ).Result;
 
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
-            {
-                Lossy = true
-            };
-
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(result.Body != null);
-
-            // Can only check if we have data, not checking if lossy has been applied
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.FileName));
-            Assert.IsTrue(result.Body.KrakedSize > 0);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.OriginalSize > 0);
-            Assert.IsTrue(result.Body.SavedBytes >= 0);
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.Success.ShouldBeTrue();
+            testitem.Body.FileName.ShouldNotBeNullOrEmpty();
+            testitem.Body.KrakedSize.ShouldBeGreaterThan(0);
+            testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
+            testitem.Body.OriginalSize.ShouldBeGreaterThan(0);
+            testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
         [TestMethod]
         public void Client_CustomRequestConvertImageFormat_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatSetsTheImageFormatToGif()
+            ).Result;
 
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
-            {
-                ConvertImage = new ConvertImage(ImageFormat.Gif)
-            };
-
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.ToLower().EndsWith(".gif"));
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.Success.ShouldBeTrue();
+            testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
+            testitem.Body.KrakedUrl.ToLower().ShouldEndWith(".gif");
         }
 
         [TestMethod]
         public void Client_CustomRequestConvertImageFormatEmptyConstructor_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
+            var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatConvertsTheImageToGifWithABackgroundColor()
+            ).Result;
 
-            var convertImage = new ConvertImage()
-            {
-                BackgroundColor = "#ffffff",
-                Format = ImageFormat.Gif
-            };
-
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
-            {
-                ConvertImage = convertImage
-            };
-
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
-            Assert.IsTrue(result.Body.KrakedUrl.ToLower().EndsWith(".gif"));
+            testitem.Success.ShouldBeTrue();
+            testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
+            testitem.Body.Success.ShouldBeTrue();
+            testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
+            testitem.Body.KrakedUrl.ToLower().ShouldEndWith(".gif");
         }
 
         [TestMethod]
         public void Client_CustomRequestChangeSize_IsTrue()
         {
-            var client = HelperFunctions.CreateWorkingClient();
-
-            var request = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
-            {
-                ResizeImage = new ResizeImage
-                {
-                    Height = 100,
-                    Width = 100,
-                    BackgroundColor = "#ffffff",
-                    Strategy = Strategy.Exact,
-                    CropMode = "c"
-                }
-            };
-
-            var response = client.OptimizeWait(request);
-            var result = response.Result;
-
-            Assert.IsTrue(result.Body != null);
-            Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
+            var result = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatResizesTheImage()
+            ).Result;
 
             var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+            var testitem = Image.FromFile(localFile);
 
-            var img = Image.FromFile(localFile);
-            Assert.IsTrue(img.Height == 100);
-            Assert.IsTrue(img.Width == 100);
+            testitem.Height.ShouldBe(100);
+            testitem.Width.ShouldBe(100);
         }
 
         [TestMethod]
@@ -324,8 +284,6 @@ namespace Tests
             Assert.IsTrue(result.Body != null);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
-
-
 
         [TestMethod]
         public void Client_CustomRequestUploadWait_IsTrue()

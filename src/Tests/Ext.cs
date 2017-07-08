@@ -61,6 +61,57 @@ namespace Tests
 
             return optimizeWaitRequest;
         }
+
+        public static OptimizeWaitRequest ThatHasLossySetAsTrue(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            {
+                Lossy = true
+            };
+
+            return optimizeWaitRequest;
+        }
+
+        public static OptimizeWaitRequest ThatSetsTheImageFormatToGif(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            {
+                ConvertImage = new ConvertImage(ImageFormat.Gif)
+            };
+
+            return optimizeWaitRequest;
+        }
+
+        public static OptimizeWaitRequest ThatConvertsTheImageToGifWithABackgroundColor(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            {
+                ConvertImage = new ConvertImage()
+                {
+                    BackgroundColor = "#ffffff",
+                    Format = ImageFormat.Gif
+                }
+            };
+
+            return optimizeWaitRequest;
+        }
+
+        public static OptimizeWaitRequest ThatResizesTheImage(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            {
+                ResizeImage = new ResizeImage
+                {
+                    Height = 100,
+                    Width = 100,
+                    BackgroundColor = "#ffffff",
+                    Strategy = Strategy.Exact,
+                    CropMode = "c"
+                }
+            };
+
+            return optimizeWaitRequest;
+        }
     }
 
     public static class OptimizeUploadWaitRequestExt
