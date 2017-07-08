@@ -76,7 +76,7 @@ namespace Tests
 
         public static OptimizeWaitRequest ThatHasLossySetAsTrue(this OptimizeWaitRequest optimizeWaitRequest)
         {
-            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
                 Lossy = true
             };
@@ -86,7 +86,7 @@ namespace Tests
 
         public static OptimizeWaitRequest ThatSetsTheImageFormatToGif(this OptimizeWaitRequest optimizeWaitRequest)
         {
-            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
                 ConvertImage = new ConvertImage(ImageFormat.Gif)
             };
@@ -96,7 +96,7 @@ namespace Tests
 
         public static OptimizeWaitRequest ThatConvertsTheImageToGifWithABackgroundColor(this OptimizeWaitRequest optimizeWaitRequest)
         {
-            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
                 ConvertImage = new ConvertImage()
                 {
@@ -110,7 +110,7 @@ namespace Tests
 
         public static OptimizeWaitRequest ThatResizesTheImage(this OptimizeWaitRequest optimizeWaitRequest)
         {
-            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
                 ResizeImage = new ResizeImage
                 {
@@ -127,13 +127,24 @@ namespace Tests
 
         public static OptimizeWaitRequest ThatResizesTheImageIntoASquare(this OptimizeWaitRequest optimizeWaitRequest)
         {
-            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageGeoTag))
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
             {
                 ResizeImage = new ResizeImage
                 {
                     Size = 120,
                     Strategy = Strategy.Square,
                 }
+            };
+
+            return optimizeWaitRequest;
+        }
+
+        public static OptimizeWaitRequest ThatSetsCustomQuality(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
+            {
+                Lossy = true,
+                Quality = 90
             };
 
             return optimizeWaitRequest;
@@ -146,6 +157,33 @@ namespace Tests
         {
             return new OptimizeUploadWaitRequest();
         }
+
+        public static OptimizeUploadWaitRequest ThatHasResizeOptions(this OptimizeUploadWaitRequest optimizeUploadWaitRequest)
+        {
+            return new OptimizeUploadWaitRequest
+            {
+                ResizeImage = new ResizeImage {Height = 100, Width = 100},
+                WebP = true
+            };
+        }
+
+        public static OptimizeUploadWaitRequest ThatHasLossyWebPAndSamplingScheme(this OptimizeUploadWaitRequest optimizeUploadWaitRequest)
+        {
+            return new OptimizeUploadWaitRequest
+            {
+                Lossy = true,
+                WebP = true,
+                SamplingScheme = SamplingScheme.S444
+            };
+        }
+
+        public static OptimizeUploadWaitRequest ThatHasAutoOrientOn(this OptimizeUploadWaitRequest optimizeUploadWaitRequest)
+        {
+            return new OptimizeUploadWaitRequest
+            {
+                AutoOrient = true
+            };
+        }
     }
 
     public static class OptimizeUploadRequestExt
@@ -153,6 +191,32 @@ namespace Tests
         public static OptimizeUploadRequest ThatHasAValidCallbackUrl(this OptimizeUploadRequest optimizeUploadRequest)
         {
             return new OptimizeUploadRequest(Given.ACallBackUrl.ThatIsAValidCallBackUrl());
+        }
+
+        public static OptimizeUploadRequest ThatHasResizeOptions(this OptimizeUploadRequest optimizeUploadRequest)
+        {
+            return new OptimizeUploadRequest(Given.ACallBackUrl.ThatIsAValidCallBackUrl())
+            {
+                ResizeImage = new ResizeImage {Height = 100, Width = 100},
+                WebP = true
+            };
+        }
+    }
+
+    public static class OptimizeSetRequestExt
+    {
+        public static OptimizeSetRequest ThatHasASetOf3(this OptimizeSetRequest optimizeSetRequest)
+        {
+            optimizeSetRequest = new OptimizeSetRequest(Given.ACallBackUrl.ThatPointsToAValidImageOnTheWeb(), Given.ACallBackUrl.ThatIsAValidCallBackUrl())
+            {
+                Lossy = true
+            };
+
+            optimizeSetRequest.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetRequest.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetRequest.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            return optimizeSetRequest;
         }
     }
 
@@ -182,6 +246,78 @@ namespace Tests
             }
         
             return optimizeSetUploadRequest;
+        }
+
+
+        public static OptimizeSetUploadRequest ThatHasASetOf3(this OptimizeSetUploadRequest optimizeSetUploadRequest)
+        {
+            optimizeSetUploadRequest = new OptimizeSetUploadRequest(Given.ACallBackUrl.ThatIsAValidCallBackUrl())
+            {
+                Lossy = true
+            };
+
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetUploadRequest.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            return optimizeSetUploadRequest;
+        }
+    }
+
+    public static class OptimizeSetWaitRequestExt
+    {
+        public static OptimizeSetWaitRequest ThatHasASetOf3(this OptimizeSetWaitRequest optimizeSetWaitRequest)
+        {
+            optimizeSetWaitRequest = new OptimizeSetWaitRequest(Given.AnExternalImageUrl.ThatPointsToAValidImageOnTheWeb())
+            {
+                Lossy = true
+            };
+
+            optimizeSetWaitRequest.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetWaitRequest.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetWaitRequest.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            return optimizeSetWaitRequest;
+        }
+    }
+
+    public static class OptimizeSetUploadWaitRequestExt
+    {
+        public static OptimizeSetUploadWaitRequest ThatHasASetOf3(this OptimizeSetUploadWaitRequest optimizeSetUploadWaitRequest)
+        {
+            optimizeSetUploadWaitRequest = new OptimizeSetUploadWaitRequest()
+            {
+                Lossy = true
+            };
+
+            optimizeSetUploadWaitRequest.AddSet(new ResizeImageSet { Name = "test1", Height = 10, Width = 10 });
+            optimizeSetUploadWaitRequest.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15 });
+            optimizeSetUploadWaitRequest.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20 });
+
+            return optimizeSetUploadWaitRequest;
+        }
+
+        public static OptimizeSetUploadWaitRequest ThatHasASetOf2WithCustomSettings(this OptimizeSetUploadWaitRequest optimizeSetUploadWaitRequest)
+        {
+            optimizeSetUploadWaitRequest = new OptimizeSetUploadWaitRequest()
+            {
+                Lossy = true
+            };
+            optimizeSetUploadWaitRequest.AddSet(new ResizeImageSet
+            {
+                Name = "test1",
+                Height = 10,
+                Width = 10,
+                Lossy = false
+            });
+            optimizeSetUploadWaitRequest.AddSet(new ResizeImageSet
+            {
+                Name = "test2",
+                Height = 15,
+                Width = 15,
+                SamplingScheme = SamplingScheme.S444
+            });
+            return optimizeSetUploadWaitRequest;
         }
     }
 

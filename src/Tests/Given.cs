@@ -27,6 +27,12 @@ namespace Tests
 
         public static OptimizeSetUploadRequest AOptimizeSetUploadRequest => new OptimizeSetUploadRequest(ACallBackUrl);
 
+        public static OptimizeSetRequest AOptimizeSetRequest => new OptimizeSetRequest(AnExternalImageUrl, ACallBackUrl);
+
         public static ResizeImageSet AResizeImageSet => new ResizeImageSet();
+
+        public static OptimizeSetWaitRequest AOptimizeSetWaitRequest => new OptimizeSetWaitRequest(AnExternalImageUrl);
+
+        public static OptimizeSetUploadWaitRequest AOptimizeSetUploadWaitRequest => new OptimizeSetUploadWaitRequest();
     }
 }
