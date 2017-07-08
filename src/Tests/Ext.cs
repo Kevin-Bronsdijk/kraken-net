@@ -139,6 +139,20 @@ namespace Tests
             return optimizeWaitRequest;
         }
 
+
+        public static OptimizeWaitRequest ThatResizesTheImageWithStrategyNone(this OptimizeWaitRequest optimizeWaitRequest)
+        {
+            optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
+            {
+                ResizeImage = new ResizeImage
+                {
+                    Strategy = Strategy.None,
+                }
+            };
+
+            return optimizeWaitRequest;
+        }
+
         public static OptimizeWaitRequest ThatSetsCustomQuality(this OptimizeWaitRequest optimizeWaitRequest)
         {
             optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))

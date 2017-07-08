@@ -172,6 +172,7 @@ namespace Tests
             testitem.Width.ShouldBe(100);
         }
 
+
         [TestMethod]
         public void Client_CustomRequestChangeSizeSquare_IsTrue()
         {
@@ -184,6 +185,20 @@ namespace Tests
 
             testitem.Height.ShouldBe(120);
             testitem.Width.ShouldBe(120);
+        }
+
+        [TestMethod]
+        public void Client_CustomRequestChangeSizeStrategyNone_IsTrue()
+        {
+            var result = Given.AClient.ThatCanConnect().OptimizeWait(
+                Given.AOptimizeWaitRequest.ThatResizesTheImageWithStrategyNone()
+            ).Result;
+
+            var localFile = HelperFunctions.DownloadImage(result.Body.KrakedUrl);
+            var testitem = Image.FromFile(localFile);
+
+            testitem.Height.ShouldBe(37);
+            testitem.Width.ShouldBe(150);
         }
 
         [TestMethod]

@@ -9,6 +9,7 @@ namespace Kraken.Model
         Fit,
         Crop,
         Square,
-        Fill
+        Fill,
+        None
     }
 }
