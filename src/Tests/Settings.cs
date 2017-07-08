@@ -2,8 +2,8 @@
 {
     public static class Settings
     {
-        public const string ApiKey = "6aa718a07669b75594928c5b2f80f71e";
-        public const string ApiSecret = "1a7f798f867d240abeb64548dcd5e63890a9b250";
+        public const string ApiKey = "";
+        public const string ApiSecret = "";
 
         public const string AzureKey =
             "";
