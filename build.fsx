@@ -5,9 +5,11 @@
 #r @"tools\FAKE\tools\FakeLib.dll"
 open Fake
 
-RestorePackages()
+
 open Fake.AssemblyInfoFile
 open Fake.Testing 
+
+RestorePackages()
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
