@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using Kraken.Model;
 using Kraken.Model.Azure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Assert = NUnit.Framework.Assert;
 using OptimizeRequest = Kraken.Model.Azure.OptimizeRequest;
 using OptimizeUploadRequest = Kraken.Model.Azure.OptimizeUploadRequest;
 using OptimizeUploadWaitRequest = Kraken.Model.Azure.OptimizeUploadWaitRequest;
@@ -15,20 +17,20 @@ using OptimizeSetWaitRequest = Kraken.Model.Azure.OptimizeSetWaitRequest;
 
 namespace Tests
 {
-    [TestClass]
-    [Ignore]
-    [DeploymentItem("Images")]
+    [TestFixture]
+    [NUnit.Framework.Ignore("Ignore for CI")]
     public class IntergrationTestsAzure
     {
+        private static string GetPathResources(string nameResourse)
+        {
+            var path = Path.GetDirectoryName(path: new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            return $"{path}\\images\\{nameResourse}";
+        }
+        
         // Not checking the results of the webhooks
         private readonly Uri _callbackUri = new Uri("http://requestb.in/15gm5dz1");
 
-        [TestInitialize]
-        public void Initialize()
-        {
-        }
-        
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -51,7 +53,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCallbackAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -75,7 +77,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCallbackAzureParams_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -97,7 +99,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCallbackAzureParamsAndPath_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -121,11 +123,11 @@ namespace Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeWaitAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.OptimizeWait(
                 image,
@@ -145,11 +147,11 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeWaitAzureDataStore_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.OptimizeWait(
                 image,
@@ -170,11 +172,11 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeWaitAzureWithPath_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.OptimizeWait(
                 image,
@@ -196,11 +198,11 @@ namespace Tests
             // Check path
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeCallbackAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.Optimize(
                 image,
@@ -221,11 +223,11 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeCallbackAzureDataStore_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.Optimize(
                 image,
@@ -247,11 +249,11 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeCallbackAzureWithPath_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.Optimize(
                 image,
@@ -274,11 +276,11 @@ namespace Tests
             // Check path
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestUploadWaitAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.OptimizeWait(
                 image,
@@ -303,11 +305,11 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestUploadCallbackAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.Optimize(
                 image,
@@ -332,7 +334,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAzureUsingIOptimizeWaitRequest_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -353,7 +355,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAzureUsingIOptimizeWaitRequestWithPath_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -375,7 +377,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAzureUsingIOptimizeWaitRequestDataStore_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -397,7 +399,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
         
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAzureUsingIOptimizeWaitRequestWithRootPath_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -419,7 +421,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
         
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAzureAddHeadersAndMeta_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -452,7 +454,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains("blob.core.windows.net"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadCallBackAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -469,7 +471,7 @@ namespace Tests
             request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
             request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
 
-            var response = client.Optimize(TestData.LocalTestImage,
+            var response = client.Optimize(GetPathResources(TestData.LocalTestImage),
                 request
                 );
 
@@ -482,7 +484,7 @@ namespace Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUrlCallBackAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -511,7 +513,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUrlWaitAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -550,7 +552,7 @@ namespace Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadWaitAzure_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -567,7 +569,7 @@ namespace Tests
             request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
             request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
 
-            var response = client.OptimizeWait(TestData.LocalTestImage,
+            var response = client.OptimizeWait(GetPathResources(TestData.LocalTestImage),
                 request
                 );
 

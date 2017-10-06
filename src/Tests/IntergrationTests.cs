@@ -1,22 +1,29 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Reflection;
+using NUnit.Framework;
 using Shouldly;
 
 namespace Tests
 {
-    [TestClass]
-    [Ignore]
-    [DeploymentItem("Images")]
+    [TestFixture]
+    [Ignore("Ignore for CI")]
     public class IntergrationTests
     {
-        [TestInitialize]
+        private static string GetPathResources(string nameResourse)
+        {
+            var path = Path.GetDirectoryName(path: new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            return $"{path}\\images\\{nameResourse}";
+        }
+        
+        [Test]
         public void Initialize()
         {
         }
 
-        [TestMethod]
+        [Test]
         public void Client_Unauthorized_IsTrue()
         {
             Given.AClient.ThatHasAValidConnection().OptimizeWait(
@@ -24,7 +31,7 @@ namespace Tests
                 .Result.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UnauthorizedSandbox_IsTrue()
         {
             Given.AClient.ThatHasAValidConnection(true).OptimizeWait(
@@ -32,7 +39,7 @@ namespace Tests
                 .Result.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_GetUserStatus_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().UserStatus().Result;
@@ -47,7 +54,7 @@ namespace Tests
             testitem.Body.QuotaRemaining.ShouldBeGreaterThan(-999999);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_InvalidResource404_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -58,7 +65,7 @@ namespace Tests
             testitem.Error.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_IgnoreInvalidResource404Sandbox_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect(true).OptimizeWait(
@@ -74,7 +81,7 @@ namespace Tests
             testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWait_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -84,7 +91,7 @@ namespace Tests
             testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCheckResultBody_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -100,7 +107,7 @@ namespace Tests
             testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCallbackCheckResultBody_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().Optimize(
@@ -113,7 +120,7 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestOptimizeCheckResultBody_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -130,7 +137,7 @@ namespace Tests
             testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestConvertImageFormat_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -144,7 +151,7 @@ namespace Tests
             testitem.Body.KrakedUrl.ToLower().ShouldEndWith(".gif");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestConvertImageFormatEmptyConstructor_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -158,7 +165,7 @@ namespace Tests
             testitem.Body.KrakedUrl.ToLower().ShouldEndWith(".gif");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestChangeSize_IsTrue()
         {
             var result = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -173,7 +180,7 @@ namespace Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestChangeSizeSquare_IsTrue()
         {
             var result = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -187,7 +194,7 @@ namespace Tests
             testitem.Width.ShouldBe(120);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestChangeSizeStrategyNone_IsTrue()
         {
             var result = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -201,7 +208,7 @@ namespace Tests
             testitem.Width.ShouldBe(150);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeRequestCallback_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().Optimize(
@@ -214,7 +221,7 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeRequestCallbackSandbox_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect(true).Optimize(
@@ -228,10 +235,10 @@ namespace Tests
             testitem.Body.Id.ShouldBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadImageWaitResult_IsTrue()
         {
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
             var testImageName = TestData.TestImageName;
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
                 image,
@@ -248,10 +255,10 @@ namespace Tests
             testitem.Body.SavedBytes.ShouldBeGreaterThanOrEqualTo(0);
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadImageCallback_IsTrue()
         {
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
             var testitem = Given.AClient.ThatCanConnect().Optimize(
                 image,
                 TestData.TestImageName,
@@ -262,13 +269,13 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestUploadWait_IsTrue()
         {
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
                 image,
-                TestData.TestImageName,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeUploadWaitRequest.ThatHasResizeOptions()).Result;
 
             testitem.Success.ShouldBeTrue();
@@ -276,13 +283,13 @@ namespace Tests
             testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestUploadCallback_IsTrue()
         {
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
             var testitem = Given.AClient.ThatCanConnect().Optimize(
                 image,
-                TestData.TestImageName,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeUploadRequest.ThatHasAValidCallbackUrl()).Result;
 
             testitem.Success.ShouldBeTrue();
@@ -290,11 +297,11 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadFromFilePathImageWait_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeUploadWaitRequest.ThatInitialOptimizeUploadWaitRequest()).Result;
 
             testitem.Success.ShouldBeTrue();
@@ -302,11 +309,11 @@ namespace Tests
             testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadFromFilePathImageCallback_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().Optimize(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeUploadRequest.ThatHasAValidCallbackUrl()).Result;
 
             testitem.Success.ShouldBeTrue();
@@ -314,11 +321,11 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_SamplingScheme_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeUploadWaitRequest.ThatHasLossyWebPAndSamplingScheme()).Result;
 
             testitem.Success.ShouldBeTrue();
@@ -326,11 +333,11 @@ namespace Tests
             testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_AutoOrient_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeUploadWaitRequest.ThatHasAutoOrientOn()).Result;
 
             testitem.Success.ShouldBeTrue();
@@ -338,22 +345,22 @@ namespace Tests
             testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_SimpleRequetsNoBody_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
-                TestData.LocalTestImage).Result;
+                GetPathResources(TestData.LocalTestImage)).Result;
 
             testitem.Success.ShouldBeTrue();
             testitem.StatusCode.ShouldBe(HttpStatusCode.OK);
             testitem.Body.KrakedUrl.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_SimpleCallbackRequetsNoBody_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().Optimize(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.ACallBackUrl.ThatIsAValidCallBackUrl()
                 ).Result;
 
@@ -362,11 +369,11 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadCallBack_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().Optimize(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeSetUploadRequest.ThatHasASetOf3()
             ).Result;
 
@@ -375,7 +382,7 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUrlCallBack_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().Optimize(
@@ -387,7 +394,7 @@ namespace Tests
             testitem.Body.Id.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUrlWait_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -405,11 +412,11 @@ namespace Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadWait_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeSetUploadWaitRequest.ThatHasASetOf3()
             ).Result;
 
@@ -424,11 +431,11 @@ namespace Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadWaitOverridingParameters_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(
-                TestData.LocalTestImage,
+                GetPathResources(TestData.LocalTestImage),
                 Given.AOptimizeSetUploadWaitRequest.ThatHasASetOf2WithCustomSettings()
             ).Result;
 
@@ -443,7 +450,7 @@ namespace Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCheckCustomQuality_IsTrue()
         {
             var testitem = Given.AClient.ThatCanConnect().OptimizeWait(

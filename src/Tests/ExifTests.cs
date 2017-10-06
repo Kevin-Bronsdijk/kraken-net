@@ -2,17 +2,16 @@
 using System.Net;
 using ExifLib;
 using Kraken.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using NUnit.Framework;
 
 namespace Tests
 {
-    [TestClass]
-    [Ignore]
-    [DeploymentItem("Images")]
+    [TestFixture]
+    [Ignore("Ignore for CI")]
     public class ExifTests
     {
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestRemoveGeoData_IsTrue()
         {
             var response = Given.AClient.ThatCanConnect().OptimizeWait(
@@ -28,7 +27,7 @@ namespace Tests
             Should.Throw<Exception>(() => new ExifReader(localFile));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_CustomRequestKeepGeoData_IsTrue()
         {
             var response = Given.AClient.ThatCanConnect().OptimizeWait(

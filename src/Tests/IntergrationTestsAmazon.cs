@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using Kraken.Model;
 using Kraken.Model.S3;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Assert = NUnit.Framework.Assert;
 using OptimizeRequest = Kraken.Model.S3.OptimizeRequest;
 using OptimizeUploadRequest = Kraken.Model.S3.OptimizeUploadRequest;
 using OptimizeUploadWaitRequest = Kraken.Model.S3.OptimizeUploadWaitRequest;
@@ -15,20 +17,20 @@ using OptimizeSetWaitRequest = Kraken.Model.S3.OptimizeSetWaitRequest;
 
 namespace Tests
 {
-    [TestClass]
-    [Ignore]
-    [DeploymentItem("Images")]
+    [TestFixture]
+    [Ignore("Ignore for CI")]
     public class IntergrationTestsAmazon
     {
+        private static string GetPathResources(string nameResourse)
+        {
+            var path = Path.GetDirectoryName(path: new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            return $"{path}\\images\\{nameResourse}";
+        }
+        
         // Not checking the results of the webhooks
         private readonly Uri _callbackUri = new Uri("http://requestb.in/15gm5dz1");
 
-        [TestInitialize]
-        public void Initialize()
-        {
-        }
-
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -52,7 +54,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCallbackAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -77,7 +79,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeCallbackAmazonWithParams_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -100,11 +102,11 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeWaitAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.OptimizeWait(
                 image,
@@ -125,11 +127,11 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeWaitAmazonDataStore_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.OptimizeWait(
                 image,
@@ -150,11 +152,11 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeCallbackAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.Optimize(
                 image,
@@ -176,11 +178,11 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_UploadOptimizeCallbackAmazonDataStore_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
-            var image = File.ReadAllBytes(TestData.LocalTestImage);
+            var image = File.ReadAllBytes(GetPathResources(TestData.LocalTestImage));
 
             var response = client.Optimize(
                 image,
@@ -202,7 +204,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAmazonUsingIOptimizeWaitRequestDataStore_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -226,7 +228,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAmazonUsingIOptimizeWaitRequest_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -248,7 +250,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAmazonWithAcl_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -274,7 +276,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAmazonWithPath_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -300,7 +302,7 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_OptimizeWaitAmazonAddHeadersAndMeta_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -336,7 +338,7 @@ namespace Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadCallBackAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -355,7 +357,7 @@ namespace Tests
             request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
             request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
 
-            var response = client.Optimize(TestData.LocalTestImage,
+            var response = client.Optimize(GetPathResources(TestData.LocalTestImage),
                 request
                 );
 
@@ -368,7 +370,7 @@ namespace Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUrlCallBackAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -399,7 +401,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUrlWaitAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -440,7 +442,7 @@ namespace Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Client_ImageSetUploadWaitAmazon_IsTrue()
         {
             var client = HelperFunctions.CreateWorkingClient();
@@ -459,7 +461,7 @@ namespace Tests
             request.AddSet(new ResizeImageSet { Name = "test2", Height = 15, Width = 15, StoragePath = "test2/test2.png" });
             request.AddSet(new ResizeImageSet { Name = "test3", Height = 20, Width = 20, StoragePath = "test3/test3.png" });
 
-            var response = client.OptimizeWait(TestData.LocalTestImage,
+            var response = client.OptimizeWait(GetPathResources(TestData.LocalTestImage),
                 request
                 );
 

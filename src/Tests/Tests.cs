@@ -1,77 +1,77 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using NUnit.Framework;
 
 namespace Tests
 {
-    [TestClass]
+    [TestFixture]
     public class Tests
     {
-        [TestMethod]
+        [Test]
         public void ConnectionCreate_EmptyKeyError_IsTrue()
         {
             Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithAnEmptyKeyValue())
                 .Message.ShouldBe("Argument must not be the empty string.\r\nParameter name: apiKey");
         }
 
-        [TestMethod]
+        [Test]
         public void ConnectionCreate_NullKeyError_IsTrue()
         {
             Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithANullKeyValue())
                 .Message.ShouldBe("Value cannot be null.\r\nParameter name: apiKey");
         }
 
-        [TestMethod]
+        [Test]
         public void ConnectionCreate_EmptySecretError_IsTrue()
         {
             Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithAnEmptySecretValue())
                 .Message.ShouldBe("Argument must not be the empty string.\r\nParameter name: apiSecret");
         }
 
-        [TestMethod]
+        [Test]
         public void ConnectionCreate_NullSecretError_IsTrue()
         {
             Should.Throw<ArgumentException>(() => Given.AConnection.ThatCantConnectWithANullSecretValue())
                 .Message.ShouldBe("Value cannot be null.\r\nParameter name: apiSecret");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_IsSandboxMode_IsTrue()
         {
             Given.AConnection.ThatHasAValidArguments(true)
                 .SandboxMode.ShouldBeTrue();
         }
 
-        [TestMethod]
+        [Test]
         public void Client_NotInSandboxMode_IsTrue()
         {
             Given.AConnection.ThatHasAValidArguments()
                 .SandboxMode.ShouldBeFalse();
         }
 
-        [TestMethod]
+        [Test]
         public void ConnectionCreate_Dispose_IsTrue()
         {
             Should.NotThrow(() => Given.AConnection.ThatHasAValidArguments()
             .Dispose());
         }
 
-        [TestMethod]
+        [Test]
         public void Client_MustProvideAConnection_IsTrue()
         {
             Should.Throw<ArgumentException>(() => Given.AClient.ThatDoesntHaveAConnection())
                 .Message.ShouldBe("Value cannot be null.\r\nParameter name: connection");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_Dispose_IsTrue()
         {
             Should.NotThrow(() => Given.AClient.ThatHasAValidConnection()
                 .Dispose());
         }
 
-        [TestMethod]
+        [Test]
         public void Client_RequestUploadWaitNoFileNameError_IsTrue()
         {
             Should.Throw<ArgumentException>(() => Given.AClient.ThatHasAValidConnection().OptimizeWait(
@@ -79,7 +79,7 @@ namespace Tests
                 .Message.ShouldBe("Value cannot be null.\r\nParameter name: image");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_RequestUploadCallbackNoFileNameError_IsTrue()
         {
 
@@ -88,7 +88,7 @@ namespace Tests
                 .Message.ShouldBe("Argument must not be the empty string.\r\nParameter name: filename");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_RequestUploadWaitNoFile_IsTrue()
         {       
             // mock io
@@ -98,7 +98,7 @@ namespace Tests
                 .Message.ShouldBe("Unable to find the specified file.");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_RequestUploadNoFile_IsTrue()
         {
             Should.Throw<FileNotFoundException>(() => Given.AClient.ThatHasAValidConnection().Optimize(
@@ -107,7 +107,7 @@ namespace Tests
                 .Message.ShouldBe("Unable to find the specified file.");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_RequestUploadWaitNoFileCompressionDefaults_IsTrue()
         {
             Should.Throw<FileNotFoundException>(() => Given.AClient.ThatHasAValidConnection().OptimizeWait(
@@ -115,7 +115,7 @@ namespace Tests
                 .Message.ShouldBe("Unable to find the specified file.");
         }
 
-        [TestMethod]
+        [Test]
         public void Client_RequestUploadNoFileCompressionDefaults_IsTrue()
         {
             Should.Throw<FileNotFoundException>(() => Given.AClient.ThatHasAValidConnection().Optimize(
@@ -123,14 +123,14 @@ namespace Tests
                 .Message.ShouldBe("Unable to find the specified file.");
         }
 
-        [TestMethod]
+        [Test]
         public void OptimizeSetRequestBase_ImageSetSameName_IsTrue()
         {
             Should.Throw<Exception>(() => Given.AOptimizeSetUploadRequest.ThatAddTheSameImageSetTwoTimes())
                 .Message.ShouldBe("Item already exists in collection");
         }
 
-        [TestMethod]
+        [Test]
         public void OptimizeSetRequestBase_ImageSetexceedMaximum_IsTrue()
         {
             Should.Throw<Exception>(() => Given.AOptimizeSetUploadRequest.ThatAddsOver10ImagesSets())
