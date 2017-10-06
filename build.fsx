@@ -4,8 +4,10 @@
 
 #r @"tools\FAKE\tools\FakeLib.dll"
 open Fake
+
+RestorePackages()
 open Fake.AssemblyInfoFile
-open Fake.MSTest
+open Fake.Testing 
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
@@ -62,13 +64,16 @@ Target "Build" (fun _ ->
 
 // --------------------------------------------------------------------------------------
 
-Target "Test" (fun _ ->
+let nunitRunnerPath = "packages/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe"
+
+Target "TestNunit" (fun _ ->
     !! (buildDir + @"\*Tests.dll") 
-      |> MSTest (fun p -> {p with ResultsDir = buildDir })
-)
+    |> NUnit3 (fun p ->
+        {p with 
+             ToolPath = nunitRunnerPath
+        }))
 
 // --------------------------------------------------------------------------------------
-
 
 Target "CreatePackage" (fun _ ->
 
@@ -102,7 +107,7 @@ Target "All" DoNothing
 "Clean"
   ==> "AssemblyInfo"
   ==> "Build"
-  ==> "Test"
+  ==> "TestNunit"
   ==> "CreatePackage"
   ==> "All"
 
