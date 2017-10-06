@@ -88,6 +88,7 @@ Target "CreatePackage" (fun _ ->
     CreateDir packagingWorkingDir
     CleanDir packagingWorkingDir
     CopyFile packagingWorkingDir "./output/kraken.dll"
+    CreateDir packagingOutputPath
 
     NuGet (fun p -> 
         {p with
