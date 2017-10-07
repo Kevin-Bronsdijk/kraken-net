@@ -76,12 +76,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\kraken-net\Kraken-net.csproj">
-      <Project>{069a5e30-e2f3-4673-a1ac-ddf5b4320ec9}</Project>
-      <Name>Kraken-net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -89,6 +83,12 @@
     <Content Include="Images\Kraken.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\kraken-net\Kraken-net.csproj">
+      <Project>{069a5e30-e2f3-4673-a1ac-ddf5b4320ec9}</Project>
+      <Name>Kraken-net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

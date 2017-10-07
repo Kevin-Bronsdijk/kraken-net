@@ -24,9 +24,9 @@ namespace Kraken.Http
 
         internal Connection(string apiKey, string apiSecret, HttpMessageHandler handler, bool sandboxMode)
         {
-            _client = new HttpClient(handler) {BaseAddress = _krakenApiUrl};
+            _client = new HttpClient(handler) { BaseAddress = _krakenApiUrl };
             _client.DefaultRequestHeaders.Add("Accept", "application/json");
-            _client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", 
+            _client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent",
                 "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36");
 
             SandboxMode = sandboxMode;
@@ -50,7 +50,7 @@ namespace Kraken.Http
             _serializerSettings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                Converters = new List<JsonConverter> {new StringEnumConverter {CamelCaseText = true}},
+                Converters = new List<JsonConverter> { new StringEnumConverter { CamelCaseText = true } },
                 NullValueHandling = NullValueHandling.Ignore
             };
         }
@@ -60,7 +60,7 @@ namespace Kraken.Http
             apiKey.ThrowIfNullOrEmpty("apiKey");
             apiSecret.ThrowIfNullOrEmpty("apiSecret");
 
-            var handler = new HttpClientHandler {Proxy = proxy};
+            var handler = new HttpClientHandler { Proxy = proxy };
             return new Connection(apiKey, apiSecret, handler, false);
         }
 
@@ -69,7 +69,7 @@ namespace Kraken.Http
             apiKey.ThrowIfNullOrEmpty("apiKey");
             apiSecret.ThrowIfNullOrEmpty("apiSecret");
 
-            var handler = new HttpClientHandler {Proxy = proxy};
+            var handler = new HttpClientHandler { Proxy = proxy };
             return new Connection(apiKey, apiSecret, handler, sandboxMode);
         }
 
@@ -80,7 +80,7 @@ namespace Kraken.Http
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
             apiRequest.Body.Dev = SandboxMode;
             var isSet = apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest;
-               
+
             using (var requestMessage = new HttpRequestMessage(apiRequest.Method, apiRequest.Uri))
             {
                 var json = JsonConvert.SerializeObject(apiRequest.Body, _serializerSettings);
