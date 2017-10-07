@@ -14,6 +14,7 @@ open System.Management.Automation
 // Information about the project to be used at NuGet and in AssemblyInfo files
 // --------------------------------------------------------------------------------------
 
+let nugetProject = "kraken-net"
 let project = "Kraken"
 let product = "kraken.NET 4.5"
 let authors = ["Kraken.io, Kevin Bronsdijk"]
@@ -34,6 +35,7 @@ let buildDir = "./output/"
 let buildDirV2 = "./outputV2/"
 let packagingOutputPath = "./nuGet/"
 let packagingWorkingDir = "./inputNuget/"
+let packagingWorkingDirV2 = "./inputNuget/v2/"
 let nugetDependencies = getDependencies "./src/kraken-net/packages.config"
 
 // --------------------------------------------------------------------------------------
@@ -103,17 +105,19 @@ Target "CreatePackage" (fun _ ->
 
     CreateDir packagingWorkingDir
     CleanDir packagingWorkingDir
+    CreateDir packagingWorkingDirV2
+    CleanDir packagingWorkingDirV2
     CopyFile packagingWorkingDir "./output/kraken.dll"
+    CopyFile packagingWorkingDirV2 "./outputV2/kraken.dll"
     CreateDir packagingOutputPath
 
     NuGet (fun p -> 
         {p with
-            Authors = authors
-            Dependencies = nugetDependencies      
+            Authors = authors    
             Files = [ (@"kraken.dll", Some @"lib/net452", None);
                         (@"kraken.dll", Some @"lib/net45", None);
-                         (@"kraken.dll", Some @"lib/netstandard1.6", None) ] 
-            Project = project
+                         (@"v2/kraken.dll", Some @"lib/netstandard1.6", None) ] 
+            Project = nugetProject
             Description = description
             OutputPath = packagingOutputPath
             Summary = summary
@@ -122,7 +126,8 @@ Target "CreatePackage" (fun _ ->
             ReleaseNotes = notes
             Publish = false }) 
             "kraken.nuspec"
-            
+
+    DeleteDir packagingWorkingDirV2        
     DeleteDir packagingWorkingDir
 )
 
