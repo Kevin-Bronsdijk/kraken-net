@@ -79,26 +79,17 @@ namespace Kraken.Http
             apiRequest.Body.Authentication.ApiKey = _apiKey;
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
             apiRequest.Body.Dev = SandboxMode;
-            bool isSet = false;
-
-            if (apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest)
-            {
-                isSet = true;
-            }
+            var isSet = apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest;
                
             using (var requestMessage = new HttpRequestMessage(apiRequest.Method, apiRequest.Uri))
             {
                 var json = JsonConvert.SerializeObject(apiRequest.Body, _serializerSettings);
                 requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                // var test1 = requestMessage.Content.ReadAsStringAsync();
-
                 using (
                     var responseMessage =
                         await _client.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false))
                 {
-                    // var test = await responseMessage.Content.ReadAsStringAsync();
-
                     return await BuildResponse<TResponse>(responseMessage, isSet, cancellationToken).ConfigureAwait(false);
                 }
             }
@@ -112,12 +103,7 @@ namespace Kraken.Http
             apiRequest.Body.Authentication.ApiKey = _apiKey;
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
             apiRequest.Body.Dev = SandboxMode;
-            bool isSet = false;
-
-            if (apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest)
-            {
-                isSet = true;
-            }
+            var isSet = apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest;
 
             using (
                 var content =
@@ -132,8 +118,6 @@ namespace Kraken.Http
                     var responseMessage =
                         await _client.PostAsync(_krakenApiUrl + apiRequest.Uri, content, cancellationToken).ConfigureAwait(false))
                 {
-                    // var test = await responseMessage.Content.ReadAsStringAsync();
-
                     return await BuildResponse<TResponse>(responseMessage, isSet, cancellationToken).ConfigureAwait(false);
                 }
             }
