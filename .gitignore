@@ -9,6 +9,9 @@ obj
 TestResults
 bin
 .vs
+packages
+TestResult.xml
+Nuget
 
 # Windows image file caches
 Thumbs.db

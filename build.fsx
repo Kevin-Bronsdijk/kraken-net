@@ -12,6 +12,7 @@ open Fake.Testing
 // --------------------------------------------------------------------------------------
 
 let project = "kraken-net"
+let fileDescription = "kraken-net .NET 4.5"
 let authors = ["Kraken.io, Kevin Bronsdijk"]
 let summary = "The official Kraken.io .Net client"
 let version = "0.1.1.6"
@@ -42,7 +43,7 @@ Target "Clean" (fun _ ->
 Target "AssemblyInfo" (fun _ ->
     let attributes =
         [ 
-            Attribute.Title project
+            Attribute.Title fileDescription
             Attribute.Product project
             Attribute.Description summary
             Attribute.Version version
@@ -65,7 +66,7 @@ Target "RestorePackages" (fun _ ->
 // --------------------------------------------------------------------------------------
 
 Target "Build" (fun _ ->
- !! "src/*.sln"
+ !! "src/kraken-net.sln"
  |> MSBuildRelease buildDir "Build"
  |> Log "AppBuild-Output: "
 )
