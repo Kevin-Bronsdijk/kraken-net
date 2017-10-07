@@ -2,6 +2,7 @@
 FAKE
 .fake
 output
+outputV2
 .suo
 inputNuget
 kraken-net.sln.DotSettings.user
@@ -12,6 +13,7 @@ bin
 packages
 TestResult.xml
 Nuget
+.idea
 
 # Windows image file caches
 Thumbs.db

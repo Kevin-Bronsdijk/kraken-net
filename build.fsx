@@ -3,22 +3,25 @@
 // --------------------------------------------------------------------------------------
 
 #r @"tools\FAKE\tools\FakeLib.dll"
+#r "System.Management.Automation"
+
 open Fake
 open Fake.AssemblyInfoFile
 open Fake.Testing 
+open System.Management.Automation
 
 // --------------------------------------------------------------------------------------
 // Information about the project to be used at NuGet and in AssemblyInfo files
 // --------------------------------------------------------------------------------------
 
-let project = "kraken-net"
-let fileDescription = "kraken-net .NET 4.5"
+let project = "Kraken"
+let product = "kraken.NET 4.5"
 let authors = ["Kraken.io, Kevin Bronsdijk"]
 let summary = "The official Kraken.io .Net client"
-let version = "0.1.1.6"
+let version = "0.2.0.0"
 let description = "The official kraken-net client interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
 let notes = "Added None as a strategy. For more information and documentation, please visit the project site on GitHub."
-let nugetVersion = "1.1.6"
+let nugetVersion = "2.0.0"
 let tags = "kraken.io C# API image optimization official"
 let gitHome = "https://github.com/kraken-io"
 let gitName = "kraken-net"
@@ -45,11 +48,12 @@ Target "Clean" (fun _ ->
 Target "AssemblyInfo" (fun _ ->
     let attributes =
         [ 
-            Attribute.Title fileDescription
-            Attribute.Product project
+            Attribute.Title project
+            Attribute.Product product
             Attribute.Description summary
             Attribute.Version version
             Attribute.FileVersion version
+            Attribute.Copyright "2017"
         ]
 
     CreateCSharpAssemblyInfo "src/kraken-net/Properties/AssemblyInfo.cs" attributes
@@ -61,10 +65,11 @@ Target "RestorePackages" (fun _ ->
      "src/Tests/packages.config"
      |> RestorePackage (fun p ->
          { p with
+             Sources = "https://www.nuget.org/api/v2" :: p.Sources
              OutputPath = "src/packages"
              Retries = 4 })
  )
-
+ 
 // --------------------------------------------------------------------------------------
 
 Target "Build" (fun _ ->
@@ -72,6 +77,8 @@ Target "Build" (fun _ ->
  |> MSBuildRelease buildDir "Build"
  |> Log "AppBuild-Output: "
 )
+
+// --------------------------------------------------------------------------------------
 
 Target "BuildV2" (fun _ ->
  !! "src/kraken-net-v2.sln"
@@ -104,7 +111,8 @@ Target "CreatePackage" (fun _ ->
             Authors = authors
             Dependencies = nugetDependencies      
             Files = [ (@"kraken.dll", Some @"lib/net452", None);
-                        (@"kraken.dll", Some @"lib/net45", None) ] 
+                        (@"kraken.dll", Some @"lib/net45", None);
+                         (@"kraken.dll", Some @"lib/netstandard1.6", None) ] 
             Project = project
             Description = description
             OutputPath = packagingOutputPath
@@ -120,9 +128,18 @@ Target "CreatePackage" (fun _ ->
 
 // --------------------------------------------------------------------------------------
 
+Target "RunSomePowerShell" <| fun _ ->
+    PowerShell.Create()
+      .AddScript("(Get-Content 'src/kraken-net-v2/kraken-net-v2.csproj') | Foreach-Object { $_ -replace '1.0.0.1', '" + version + "'} | Set-Content 'src/kraken-net-v2/kraken-net-v2.csproj'")
+      .Invoke()
+      |> Seq.iter (printfn "%O")
+      
+// --------------------------------------------------------------------------------------
+
 Target "All" DoNothing
 
 "Clean"
+  ==> "RunSomePowerShell"
   ==> "AssemblyInfo"
   ==> "RestorePackages"
   ==> "Build"
