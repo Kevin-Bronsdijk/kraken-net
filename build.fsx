@@ -28,6 +28,7 @@ let gitName = "kraken-net"
 // --------------------------------------------------------------------------------------
 
 let buildDir = "./output/"
+let buildDirV2 = "./outputV2/"
 let packagingOutputPath = "./nuGet/"
 let packagingWorkingDir = "./inputNuget/"
 let nugetDependencies = getDependencies "./src/kraken-net/packages.config"
@@ -36,6 +37,7 @@ let nugetDependencies = getDependencies "./src/kraken-net/packages.config"
 
 Target "Clean" (fun _ ->
  CleanDir buildDir
+ CleanDir buildDirV2
 )
 
 // --------------------------------------------------------------------------------------
@@ -68,6 +70,12 @@ Target "RestorePackages" (fun _ ->
 Target "Build" (fun _ ->
  !! "src/kraken-net.sln"
  |> MSBuildRelease buildDir "Build"
+ |> Log "AppBuild-Output: "
+)
+
+Target "BuildV2" (fun _ ->
+ !! "src/kraken-net-v2.sln"
+ |> MSBuildRelease buildDirV2 "Build"
  |> Log "AppBuild-Output: "
 )
 
@@ -118,6 +126,7 @@ Target "All" DoNothing
   ==> "AssemblyInfo"
   ==> "RestorePackages"
   ==> "Build"
+  ==> "BuildV2"
   ==> "TestNunit"
   ==> "CreatePackage"
   ==> "All"
