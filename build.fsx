@@ -75,7 +75,7 @@ Target "Build" (fun _ ->
 let nunitRunnerPath = "src/packages/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe"
 
 Target "TestNunit" (fun _ ->
-    !! (buildDir + @"\*Tests.dll") 
+    !! (buildDir + @"\Tests.dll") 
     |> NUnit3 (fun p ->
         {p with 
              ToolPath = nunitRunnerPath
