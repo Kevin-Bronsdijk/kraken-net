@@ -5,6 +5,7 @@ output
 .suo
 inputNuget
 kraken-net.sln.DotSettings.user
+obj
 TestResults
 bin
 .vs
