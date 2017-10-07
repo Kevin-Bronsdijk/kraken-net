@@ -127,10 +127,6 @@ Target "CreatePackage" (fun _ ->
             Publish = false }) 
             "kraken.nuspec"
 
-    CleanDir packagingWorkingDirV2
-    DeleteDir packagingWorkingDirV2   
-    CleanDir packagingWorkingDir
-    DeleteDir packagingWorkingDir
 )
 
 // --------------------------------------------------------------------------------------
