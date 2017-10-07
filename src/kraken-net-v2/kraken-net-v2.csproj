@@ -15,8 +15,8 @@
     <Product>kraken.NET Standard 1.6</Product>
     <PackageReleaseNotes>For more information and documentation, please visit the project site on GitHub.</PackageReleaseNotes>
     <PackageId>kraken-net</PackageId>
-    <Version>1.0.0.1</Version>
-	<AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <Version>0.2.0.0</Version>
+	<AssemblyVersion>0.2.0.0</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <RepositoryUrl>https://github.com/kevin-bronsdijk/kraken-net</RepositoryUrl>
   </PropertyGroup>
