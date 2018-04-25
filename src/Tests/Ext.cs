@@ -139,7 +139,6 @@ namespace Tests
             return optimizeWaitRequest;
         }
 
-
         public static OptimizeWaitRequest ThatResizesTheImageWithStrategyNone(this OptimizeWaitRequest optimizeWaitRequest)
         {
             optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
@@ -261,7 +260,6 @@ namespace Tests
         
             return optimizeSetUploadRequest;
         }
-
 
         public static OptimizeSetUploadRequest ThatHasASetOf3(this OptimizeSetUploadRequest optimizeSetUploadRequest)
         {
