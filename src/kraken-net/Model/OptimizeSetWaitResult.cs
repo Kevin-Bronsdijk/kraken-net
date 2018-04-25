@@ -1,5 +1,4 @@
-﻿
-namespace Kraken.Model
+﻿namespace Kraken.Model
 {
     public class OptimizeSetWaitResult : OptimizeWaitResult
     {
