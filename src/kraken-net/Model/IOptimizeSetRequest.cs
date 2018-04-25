@@ -1,5 +1,4 @@
-﻿
-namespace Kraken.Model
+﻿namespace Kraken.Model
 {
     public interface IOptimizeSetRequest : IRequest
     {
