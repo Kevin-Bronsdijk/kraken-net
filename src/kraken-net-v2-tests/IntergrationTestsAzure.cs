@@ -482,7 +482,6 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-
         [Test]
         public void Client_ImageSetUrlCallBackAzure_IsTrue()
         {
