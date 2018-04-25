@@ -261,7 +261,6 @@ namespace Tests
             return optimizeSetUploadRequest;
         }
 
-
         public static OptimizeSetUploadRequest ThatHasASetOf3(this OptimizeSetUploadRequest optimizeSetUploadRequest)
         {
             optimizeSetUploadRequest = new OptimizeSetUploadRequest(Given.ACallBackUrl.ThatIsAValidCallBackUrl())
