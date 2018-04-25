@@ -122,7 +122,6 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
 
-
         [Test]
         public void Client_UploadOptimizeWaitAzure_IsTrue()
         {
@@ -482,7 +481,6 @@ namespace Tests
             Assert.IsTrue(result.Body != null);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
-
 
         [Test]
         public void Client_ImageSetUrlCallBackAzure_IsTrue()
