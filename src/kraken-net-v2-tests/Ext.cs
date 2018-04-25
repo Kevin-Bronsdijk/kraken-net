@@ -139,7 +139,6 @@ namespace Tests
             return optimizeWaitRequest;
         }
 
-
         public static OptimizeWaitRequest ThatResizesTheImageWithStrategyNone(this OptimizeWaitRequest optimizeWaitRequest)
         {
             optimizeWaitRequest = new OptimizeWaitRequest(new Uri(TestData.ImageOne))
