@@ -1,6 +1,7 @@
 The official Kraken.io .Net client
 =============
 [![Build status](https://ci.appveyor.com/api/projects/status/ldgq89yc1kk3su7e?svg=true)](https://ci.appveyor.com/project/Kevin-Bronsdijk/kraken-net) [![NuGet](https://img.shields.io/nuget/v/kraken-net.svg)](https://www.nuget.org/packages/kraken-net/)
+[![CodeFactor](https://www.codefactor.io/repository/github/kevin-bronsdijk/kraken-net/badge)](https://www.codefactor.io/repository/github/kevin-bronsdijk/kraken-net)
 ***
 ### The official Kraken.IO .Net client targeting .Net framework version 4.5 and higher, .NET Core 1.0, Mono 4.6, Xamarin.iOS 10.0, Xamarin.Mac 3.0 and Xamarin.Android 7.0.
 
