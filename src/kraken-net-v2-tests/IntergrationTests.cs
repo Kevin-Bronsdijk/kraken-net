@@ -179,7 +179,6 @@ namespace Tests
         //    testitem.Width.ShouldBe(100);
         //}
 
-
         //[Test]
         //public void Client_CustomRequestChangeSizeSquare_IsTrue()
         //{

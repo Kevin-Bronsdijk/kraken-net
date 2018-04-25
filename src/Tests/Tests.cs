@@ -82,7 +82,6 @@ namespace Tests
         [Test]
         public void Client_RequestUploadCallbackNoFileNameError_IsTrue()
         {
-
             Should.Throw<ArgumentException>(() => Given.AClient.ThatHasAValidConnection().Optimize(
                     null, string.Empty, Given.AOptimizeUploadRequest.ThatHasAValidCallbackUrl()))
                 .Message.ShouldBe("Argument must not be the empty string.\r\nParameter name: filename");

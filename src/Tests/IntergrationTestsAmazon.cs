@@ -337,7 +337,6 @@ namespace Tests
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
 
-
         [Test]
         public void Client_ImageSetUploadCallBackAmazon_IsTrue()
         {
@@ -368,7 +367,6 @@ namespace Tests
             Assert.IsTrue(result.Body != null);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.Id));
         }
-
 
         [Test]
         public void Client_ImageSetUrlCallBackAmazon_IsTrue()
