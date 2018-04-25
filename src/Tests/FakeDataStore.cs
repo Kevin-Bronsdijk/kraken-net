@@ -1,5 +1,4 @@
-﻿
-using Kraken.Model;
+﻿using Kraken.Model;
 
 namespace Tests
 {
