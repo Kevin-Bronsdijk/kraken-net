@@ -14,7 +14,7 @@ namespace Tests
         [Test]
         public void Client_CustomRequestRemoveGeoData_IsTrue()
         {
-            var response = Given.AClient.testSubject().OptimizeWait(
+            var response = Given.AClient.ThatCanConnect().OptimizeWait(
                 Given.AOptimizeWaitRequest.ThatHasAUriToAnImageWithGeoTags()).Result;
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -30,7 +30,7 @@ namespace Tests
         [Test]
         public void Client_CustomRequestKeepGeoData_IsTrue()
         {
-            var response = Given.AClient.testSubject().OptimizeWait(
+            var response = Given.AClient.ThatCanConnect().OptimizeWait(
                 Given.AOptimizeWaitRequest.ThatHasAUriToAnImageWithGeoTags(new[] { PreserveMeta.Geotag })).Result;
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -41,13 +41,11 @@ namespace Tests
 
             using (var reader = new ExifReader(localFile))
             {
-                double[] gpsLongArray;
-                double[] gpsLatArray;
                 double gpsLongDouble = 0;
                 double gpsLatDouble = 0;
 
-                if (reader.GetTagValue(ExifTags.GPSLongitude, out gpsLongArray)
-                    && reader.GetTagValue(ExifTags.GPSLatitude, out gpsLatArray))
+                if (reader.GetTagValue(ExifTags.GPSLongitude, out double[] gpsLongArray)
+                    && reader.GetTagValue(ExifTags.GPSLatitude, out double[] gpsLatArray))
                 {
                     gpsLongDouble = gpsLongArray[0] + gpsLongArray[1] / 60 + gpsLongArray[2] / 3600;
                     gpsLatDouble = gpsLatArray[0] + gpsLatArray[1] / 60 + gpsLatArray[2] / 3600;

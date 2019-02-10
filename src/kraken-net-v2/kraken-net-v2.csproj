@@ -19,7 +19,7 @@
     <FileVersion>0.2.0.0</FileVersion>
     <RepositoryUrl>https://github.com/kevin-bronsdijk/kraken-net</RepositoryUrl>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile></DocumentationFile>
