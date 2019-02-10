@@ -10,12 +10,12 @@ namespace Tests
 {
     [TestFixture]
     [Ignore("Ignore for CI")]
-    public class IntergrationTests
+    public class IntegrationTests
     {
-        private static string GetPathResources(string nameResourse)
+        private static string GetPathResources(string nameResource)
         {
             var path = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath);
-            return $"{path}\\images\\{nameResourse}";
+            return $"{path}\\images\\{nameResource}";
         }
         
         [Test]

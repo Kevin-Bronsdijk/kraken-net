@@ -130,7 +130,7 @@ namespace Tests
         }
 
         [Test]
-        public void OptimizeSetRequestBase_ImageSetexceedMaximum_IsTrue()
+        public void OptimizeSetRequestBase_ImageSetExceedMaximum_IsTrue()
         {
             Should.Throw<Exception>(() => Given.AOptimizeSetUploadRequest.ThatAddsOver10ImagesSets())
                 .Message.ShouldBe("Cannot exceed the quota of 10 instructions per request");

@@ -14,16 +14,16 @@ namespace Tests
             return new Client(connection);
         }
 
-        //public static string DownloadImage(string fileLocation)
-        //{
-        //    var fileName = Path.GetTempPath() + Guid.NewGuid() + Path.GetFileName(fileLocation);
+        public static string DownloadImage(string fileLocation)
+        {
+            var fileName = Path.GetTempPath() + Guid.NewGuid() + Path.GetFileName(fileLocation);
 
-        //    using (var client = new WebClient())
-        //    {
-        //        client.DownloadFile(fileLocation, fileName);
-        //    }
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(fileLocation, fileName);
+            }
 
-        //    return fileName;
-        //}
+            return fileName;
+        }
     }
 }

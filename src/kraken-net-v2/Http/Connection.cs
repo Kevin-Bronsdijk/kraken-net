@@ -22,7 +22,7 @@ namespace Kraken.Http
         private HttpClient _client;
         private JsonSerializerSettings _serializerSettings;
 
-        internal Connection(string apiKey, string apiSecret, HttpMessageHandler handler, bool sandboxMode)
+        private Connection(string apiKey, string apiSecret, HttpMessageHandler handler, bool sandboxMode)
         {
             _client = new HttpClient(handler) { BaseAddress = _krakenApiUrl };
             _client.DefaultRequestHeaders.Add("Accept", "application/json");
@@ -45,7 +45,7 @@ namespace Kraken.Http
             GC.SuppressFinalize(this);
         }
 
-        internal void ConfigureSerialization()
+        private void ConfigureSerialization()
         {
             _serializerSettings = new JsonSerializerSettings
             {
