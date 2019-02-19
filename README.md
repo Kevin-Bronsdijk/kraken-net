@@ -602,7 +602,7 @@ In addition, new calls have been introduced to simplify requests within custom c
 
 ## LICENSE - MIT
 
-Copyright (c) 2016 
+Copyright (c) 2019 
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
