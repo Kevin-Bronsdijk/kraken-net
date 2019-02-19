@@ -6,11 +6,13 @@
 nuget Fake.IO.FileSystem
 nuget Fake.DotNet.MSBuild
 nuget Fake.DotNet
+nuget Fake.DotNet.Testing.NUnit
 nuget Fake.Core.Target //"
 
 open Fake.IO
 open Fake.IO.Globbing.Operators //enables !! and globbing
 open Fake.DotNet
+open Fake.DotNet.Testing
 open Fake.Core
 
 // --------------------------------------------------------------------------------------
@@ -40,28 +42,33 @@ let packagingWorkingDir = "./inputNuget/"
 
 // --------------------------------------------------------------------------------------
 
-// Properties
-let buildDir = "./build/"
-
 // Targets
 Target.create "Clean" (fun _ ->
   Shell.cleanDir buildDir
 )
 
 Target.create "BuildApp" (fun _ ->
-  !! "src/app/**/*.csproj"
+  !! "src/kraken-net-v2.sln"
     |> MSBuild.runRelease id buildDir "Build"
     |> Trace.logItems "AppBuild-Output: "
 )
 
+Target.create "Test" (fun _ ->
+    !! (buildDir + "/*tests.dll")
+      |> NUnit3.run (fun p ->
+          {p with
+                ShadowCopy = false })
+)
+
 Target.create "Default" (fun _ ->
-  Trace.trace "Hello World from FAKE"
+  Trace.trace "End of Default"
 )
 
 open Fake.Core.TargetOperators
 
 "Clean"
   ==> "BuildApp"
+  ==> "Test"
   ==> "Default"
 
 // start build
