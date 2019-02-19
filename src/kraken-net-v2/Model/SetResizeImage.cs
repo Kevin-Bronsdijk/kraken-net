@@ -19,7 +19,7 @@ namespace Kraken.Model
         [JsonIgnore]
         public SamplingScheme SamplingScheme
         {
-            get { return _samplingScheme; }
+            get => _samplingScheme;
             set
             {
                 // I think this clearly shows that Its better to use separate models 

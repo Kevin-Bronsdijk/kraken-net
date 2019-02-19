@@ -14,10 +14,7 @@ namespace Kraken
 
         public Client(Connection connection)
         {
-            if (connection == null)
-                throw new ArgumentNullException(nameof(connection));
-
-            _connection = connection;
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         public void Dispose()
@@ -26,12 +23,7 @@ namespace Kraken
             GC.SuppressFinalize(this);
         }
 
-        public Task<IApiResponse<UserResult>> UserStatus()
-        {
-            return UserStatus(default(CancellationToken));
-        }
-
-        public Task<IApiResponse<UserResult>> UserStatus(CancellationToken cancellationToken)
+        public Task<IApiResponse<UserResult>> UserStatus(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken == null)
             {
@@ -49,12 +41,7 @@ namespace Kraken
 
         // Keep all default settings as provided by Kraken 
 
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri)
-        {
-            return OptimizeWait(imageUri, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(Uri imageUri, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (imageUri == null)
             {
@@ -68,13 +55,8 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl)
-        {
-            return Optimize(imageUri, callbackUrl, default(CancellationToken));
-        }
-
         public Task<IApiResponse<OptimizeResult>> Optimize(Uri imageUri, Uri callbackUrl,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (imageUri == null)
             {
@@ -92,22 +74,12 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath)
-        {
-            return OptimizeWait(filePath, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath, CancellationToken cancellationToken = default(CancellationToken))
         {
             return OptimizeWait(filePath, new OptimizeUploadWaitRequest(), cancellationToken);
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, Uri callbackUrl)
-        {
-            return Optimize(filePath, callbackUrl, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, Uri callbackUrl, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, Uri callbackUrl, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Optimize(filePath, new OptimizeUploadRequest(callbackUrl), cancellationToken);
         }
@@ -116,16 +88,10 @@ namespace Kraken
 
         #region Custom Requests 
 
-        // Requests that can be custimized by providing a custom request
+        // Requests that can be customized by providing a custom request
 
         public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath,
-            IOptimizeUploadWaitRequest optimizeWaitRequest)
-        {
-            return OptimizeWait(filePath, optimizeWaitRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(string filePath,
-            IOptimizeUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+            IOptimizeUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filePath.ThrowIfNullOrEmpty("filePath");
             if (!File.Exists(filePath))
@@ -150,13 +116,8 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, IOptimizeUploadRequest optimizeRequest)
-        {
-            return Optimize(filePath, optimizeRequest, default(CancellationToken));
-        }
-
         public Task<IApiResponse<OptimizeResult>> Optimize(string filePath,
-            IOptimizeUploadRequest optimizeRequest, CancellationToken cancellationToken)
+            IOptimizeUploadRequest optimizeRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filePath.ThrowIfNullOrEmpty("filePath");
             if (!File.Exists(filePath))
@@ -181,13 +142,7 @@ namespace Kraken
         }
 
         public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename,
-            IOptimizeUploadWaitRequest optimizeWaitRequest)
-        {
-            return OptimizeWait(image, filename, optimizeWaitRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(byte[] image, string filename,
-            IOptimizeUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+            IOptimizeUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (image == null)
             {
@@ -207,13 +162,7 @@ namespace Kraken
         }
 
         public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
-            IOptimizeUploadRequest optimizeRequest)
-        {
-            return Optimize(image, filename, optimizeRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
-            IOptimizeUploadRequest optimizeRequest, CancellationToken cancellationToken)
+            IOptimizeUploadRequest optimizeRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filename.ThrowIfNullOrEmpty("filename");
             if (optimizeRequest == null)
@@ -231,13 +180,8 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(IOptimizeWaitRequest optimizeWaitRequest)
-        {
-            return OptimizeWait(optimizeWaitRequest, default(CancellationToken));
-        }
-
         public Task<IApiResponse<OptimizeWaitResult>> OptimizeWait(IOptimizeWaitRequest optimizeWaitRequest,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (optimizeWaitRequest == null)
             {
@@ -254,13 +198,8 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeRequest optimizeRequest)
-        {
-            return Optimize(optimizeRequest, default(CancellationToken));
-        }
-
         public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeRequest optimizeRequest,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (optimizeRequest == null)
             {
@@ -281,12 +220,7 @@ namespace Kraken
 
         #region Image Sets
 
-        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(IOptimizeSetWaitRequest optimizeSetWaitRequest)
-        {
-            return OptimizeWait(optimizeSetWaitRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(IOptimizeSetWaitRequest optimizeSetWaitRequest, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(IOptimizeSetWaitRequest optimizeSetWaitRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             var message = _connection.Execute<OptimizeSetWaitResults>(new ApiRequest(optimizeSetWaitRequest, "v1/url"),
                 cancellationToken);
@@ -294,12 +228,7 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeSetRequest optimizeSetRequest)
-        {
-            return Optimize(optimizeSetRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeSetRequest optimizeSetRequest, CancellationToken cancellationToken)
+        public Task<IApiResponse<OptimizeResult>> Optimize(IOptimizeSetRequest optimizeSetRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             var message = _connection.Execute<OptimizeResult>(new ApiRequest(optimizeSetRequest, "v1/url"),
                 cancellationToken);
@@ -308,13 +237,7 @@ namespace Kraken
         }
 
         public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(byte[] image, string filename,
-            IOptimizeSetUploadWaitRequest optimizeWaitRequest)
-        {
-            return OptimizeWait(image, filename, optimizeWaitRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(byte[] image, string filename,
-            IOptimizeSetUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+            IOptimizeSetUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filename.ThrowIfNullOrEmpty("filename");
 
@@ -325,13 +248,8 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(string filePath, IOptimizeSetUploadWaitRequest optimizeWaitRequest)
-        {
-            return OptimizeWait(filePath, optimizeWaitRequest, default(CancellationToken));
-        }
-
         public Task<IApiResponse<OptimizeSetWaitResults>> OptimizeWait(string filePath,
-            IOptimizeSetUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken)
+            IOptimizeSetUploadWaitRequest optimizeWaitRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filePath.ThrowIfNullOrEmpty("filePath");
             if (!File.Exists(filePath)) { throw new FileNotFoundException(); }
@@ -346,13 +264,7 @@ namespace Kraken
         }
 
         public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
-            IOptimizeSetUploadRequest optimizeRequest)
-        {
-            return Optimize(image, filename, optimizeRequest, default(CancellationToken));
-        }
-
-        public Task<IApiResponse<OptimizeResult>> Optimize(byte[] image, string filename,
-            IOptimizeSetUploadRequest optimizeRequest, CancellationToken cancellationToken)
+            IOptimizeSetUploadRequest optimizeRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filename.ThrowIfNullOrEmpty("filename");
 
@@ -362,13 +274,8 @@ namespace Kraken
             return message;
         }
 
-        public Task<IApiResponse<OptimizeResult>> Optimize(string filePath, IOptimizeSetUploadRequest optimizeRequest)
-        {
-            return Optimize(filePath, optimizeRequest, default(CancellationToken));
-        }
-
         public Task<IApiResponse<OptimizeResult>> Optimize(string filePath,
-            IOptimizeSetUploadRequest optimizeRequest, CancellationToken cancellationToken)
+            IOptimizeSetUploadRequest optimizeRequest, CancellationToken cancellationToken = default(CancellationToken))
         {
             filePath.ThrowIfNullOrEmpty("filePath");
             if (!File.Exists(filePath)) { throw new FileNotFoundException(); }

@@ -19,15 +19,15 @@ namespace Tests
 {
     [TestFixture]
     [Ignore("Ignore for CI")]
-    public class IntergrationTestsAmazon
+    public class IntegrationTestsAmazon
     {
-        private static string GetPathResources(string nameResourse)
+        private static string GetPathResources(string nameResource)
         {
-            var path = Path.GetDirectoryName(path: new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-            return $"{path}\\images\\{nameResourse}";
+            var path = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath);
+            return $"{path}\\images\\{nameResource}";
         }
         
-        // Not checking the results of the webhooks
+        // Not checking the results of the web hooks
         private readonly Uri _callbackUri = new Uri("http://requestb.in/15gm5dz1");
 
         [Test]
@@ -314,7 +314,7 @@ namespace Tests
                 string.Empty
                 );
 
-            dataStore.AddMetadata("x-amz-meta-test1", "value11"); // Prefix will be removeda and added by kraken later
+            dataStore.AddMetadata("x-amz-meta-test1", "value11"); // Prefix will be removed and added by kraken later
             dataStore.AddMetadata("test2", "value22");
             dataStore.AddHeaders("Cache-Control", "max-age=2222");
 
@@ -336,7 +336,7 @@ namespace Tests
             Assert.IsTrue(!string.IsNullOrEmpty(result.Body.KrakedUrl));
             Assert.IsTrue(result.Body.KrakedUrl.Contains(".amazonaws.com"));
         }
-
+        
         [Test]
         public void Client_ImageSetUploadCallBackAmazon_IsTrue()
         {
