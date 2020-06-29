@@ -110,7 +110,7 @@ namespace Kraken.Http
                     new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture)))
             {
                 var json = JsonConvert.SerializeObject(apiRequest.Body, _serializerSettings);
-                content.Add(new StringContent(json, Encoding.UTF8, "application/json"));
+                content.Add(new StringContent(json, Encoding.UTF8, "application/json"), "data");
 
                 content.Add(new StreamContent(new MemoryStream(image)), filename, filename);
 
