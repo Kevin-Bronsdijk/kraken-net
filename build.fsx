@@ -19,10 +19,10 @@ let project = "Kraken"
 let product = "kraken.NET 4.5"
 let authors = ["Kraken.io, Kevin Bronsdijk"]
 let summary = "The official Kraken.io .Net client"
-let version = "0.2.0.0"
+let version = "0.2.0.1"
 let description = "The official kraken-net client interacts with the Kraken.io REST API allowing you to utilize Krakens features using a .NET interface."
-let notes = "Added None as a strategy. For more information and documentation, please visit the project site on GitHub."
-let nugetVersion = "2.0.0"
+let notes = "form data fix kraken-net/pull/22"
+let nugetVersion = "2.0.1"
 let tags = "kraken.io C# API image optimization official"
 let gitHome = "https://github.com/kraken-io"
 let gitName = "kraken-net"
@@ -55,7 +55,7 @@ Target "AssemblyInfo" (fun _ ->
             Attribute.Description summary
             Attribute.Version version
             Attribute.FileVersion version
-            Attribute.Copyright "2017"
+            Attribute.Copyright "2020"
         ]
 
     CreateCSharpAssemblyInfo "src/kraken-net/Properties/AssemblyInfo.cs" attributes
@@ -75,6 +75,7 @@ Target "RestorePackages" (fun _ ->
 // --------------------------------------------------------------------------------------
 
 Target "Build" (fun _ ->
+ EnvironmentHelper.setBuildParam "VisualStudioVersion" "16.0"
  !! "src/kraken-net.sln"
  |> MSBuildRelease buildDir "Build"
  |> Log "AppBuild-Output: "
