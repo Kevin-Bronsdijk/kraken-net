@@ -78,9 +78,9 @@ namespace Kraken.Http
         {
             apiRequest.Body.Authentication.ApiKey = _apiKey;
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
-            apiRequest.Body.Dev = SandboxMode;
+            apiRequest.Body.Dev = SandboxMode || apiRequest.Body.Dev;
             var isSet = apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest;
-               
+
             using (var requestMessage = new HttpRequestMessage(apiRequest.Method, apiRequest.Uri))
             {
                 var json = JsonConvert.SerializeObject(apiRequest.Body, _serializerSettings);
@@ -102,7 +102,7 @@ namespace Kraken.Http
 
             apiRequest.Body.Authentication.ApiKey = _apiKey;
             apiRequest.Body.Authentication.ApiSecret = _apiSecret;
-            apiRequest.Body.Dev = SandboxMode;
+            apiRequest.Body.Dev = SandboxMode || apiRequest.Body.Dev;
             var isSet = apiRequest.Body is IOptimizeSetWaitRequest || apiRequest.Body is IOptimizeSetUploadWaitRequest;
 
             using (
